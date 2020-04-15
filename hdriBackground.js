@@ -56,14 +56,14 @@ function onMouseWheel(){
     camera.projectionMatrix =    (new THREE.Matrix4()).makePerspective( camera.fov, window.innerWidth / window.innerHeight, 1, 1100, camera.near, camera.far );
     camera.updateProjectionMatrix();
 // scrolling de page
-    if (camera.fov == fovMAX && event.detail >= 3 || event.wheelDeltaY >= 3 ) {
-      console.log("Scrolling : " + event.detail);
-      mesh.geometry.dispose();
-      mesh.material.dispose();
-      scene.remove( mesh );
-      createModel("studio_small_06.jpg");
-
-    }
+    // if (camera.fov == fovMAX && event.detail >= 3 || event.wheelDeltaY >= 3 ) {
+    //   console.log("Scrolling : " + event.detail);
+    //   mesh.geometry.dispose();
+    //   mesh.material.dispose();
+    //   scene.remove( mesh );
+    //   createModel("studio_small_06.jpg");
+    //
+    // }
 }
 function onMouseMove(event){
 
