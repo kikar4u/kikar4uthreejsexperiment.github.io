@@ -6,6 +6,9 @@ const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
 
+var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
+var PI_2 = Math.PI / 2;
+
 let WIDTH, HEIGHT;
 // Déclaration variables
 
@@ -66,18 +69,25 @@ function onMouseWheel(){
     // }
 }
 function onMouseMove(event){
-
+  mouse.x = (event.clientX - windowsHalf.x);
+  mouse.y = (event.clientY - windowsHalf.x);
   // get mouse position
-    mouse.x = (event.clientX - windowsHalf.x);
-    mouse.y = (event.clientY - windowsHalf.x);
+    if (mouse.x > 0 || mouse.x < 0 ) {
+      target.x = (1-mouse.x) * 0.002;
+      target.y = (1-mouse.y) * 0.002;
+      mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
+      mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
+    }
+    //Second method using quaternion
+  // var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+  // var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+  // euler.setFromQuaternion(camera.quaternion);
+  // euler.y -= movementX * 0.002;
+  // euler.x -= movementY * 0.002;
+	// euler.x = Math.max( - PI_2, Math.min( PI_2, euler.x ) );
 
-    target.x = (1-mouse.x) * 0.002;
-    target.y = (1-mouse.y) * 0.002;
-    // rotate mesh and clamping values between -1 and 1
-    mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
-    mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
-
-    mesh.rotation.z = 0;
+    console.log("ça fonctionne ? ");
+    console.log(" rotation x " + target.x + " Rotation y " + target.y);
     //console.log(" rotation x " + mesh.rotation.x + " Rotation y " + mesh.rotation.y + " rotation z " + mesh.rotation.z);
 }
 function createScene() {
