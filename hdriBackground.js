@@ -1,7 +1,8 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = { "projet1" : "testfelix&paul.jpg", "projet2" : "quattro_canti.jpg", "projet3": "test.jpg" };
+var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg"];
+var currentProject;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
@@ -10,18 +11,29 @@ var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
 var PI_2 = Math.PI / 2;
 
 let WIDTH, HEIGHT;
+var next;
 // Déclaration variables
 
-window.addEventListener('load', init, false);
 
+window.addEventListener('load', init, false);
 window.addEventListener('wheel', onMouseWheel, false);
 window.addEventListener('DOMMouseScroll', onMouseWheel, false);
 window.addEventListener('mousemove', onMouseMove, false);
+
+window.onload = function(){
+
+  next = document.getElementById("next");
+  //console.log(next);
+  next.addEventListener('click', function(){changeProject("next")} , false);
+
+}
+
 function init() {
   // Create scene
     createScene();
     // Create sphere contained textures
-    createModel(textureArray["projet1"]);
+    createModel(textureArray[0]);
+    currentProject = 0;
     render();
     // Controls with mouse, no longer useful
     //createOrbit();
@@ -59,25 +71,29 @@ function onMouseWheel(){
     camera.projectionMatrix =    (new THREE.Matrix4()).makePerspective( camera.fov, window.innerWidth / window.innerHeight, 1, 1100, camera.near, camera.far );
     camera.updateProjectionMatrix();
 // scrolling de page
-    // if (camera.fov == fovMAX && event.detail >= 3 || event.wheelDeltaY >= 3 ) {
-    //   console.log("Scrolling : " + event.detail);
-    //   mesh.geometry.dispose();
-    //   mesh.material.dispose();
-    //   scene.remove( mesh );
-    //   createModel("studio_small_06.jpg");
-    //
-    // }
+    if (camera.fov == fovMAX && event.detail >= 3 || event.wheelDeltaY >= 3 ) {
+      console.log("Scrolling : " + event.detail);
+
+
+    }
+}
+function changeProject(eventType){
+
+    console.log("on est dans le trucla");
+    mesh.geometry.dispose();
+    mesh.material.dispose();
+    scene.remove(mesh);
+    createModel(textureArray[currentProject++]);
 }
 function onMouseMove(event){
   mouse.x = (event.clientX - windowsHalf.x);
   mouse.y = (event.clientY - windowsHalf.x);
   // get mouse position
-    if (mouse.x > 0 || mouse.x < 0 ) {
       target.x = (1-mouse.x) * 0.005;
       target.y = (1-mouse.y) * 0.002;
       mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
       mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
-    }
+
     //Second method using quaternion
   // var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
   // var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
@@ -86,8 +102,8 @@ function onMouseMove(event){
   // euler.x -= movementY * 0.002;
 	// euler.x = Math.max( - PI_2, Math.min( PI_2, euler.x ) );
 
-    console.log("ça fonctionne ? ");
-    console.log(" rotation x " + target.x + " Rotation y " + target.y);
+    // console.log("ça fonctionne ? ");
+    // console.log(" rotation x " + target.x + " Rotation y " + target.y);
     //console.log(" rotation x " + mesh.rotation.x + " Rotation y " + mesh.rotation.y + " rotation z " + mesh.rotation.z);
 }
 function createScene() {
@@ -138,7 +154,9 @@ function resizeCanvas(){
 
 function createModel(texturePath) {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
-    let texture = new THREE.TextureLoader().load("hdri/" + texturePath );
+
+    let texture = new THREE.TextureLoader().load(texturePath);
+    console.log("texture path: " + texturePath);
     // stop resize on Chrome
     // BUG: Due to webGL limitations on Firefox, texture is resized
     // NOTE: Work on firefox 76, but framerate is quite low compared to Chrome based browser
