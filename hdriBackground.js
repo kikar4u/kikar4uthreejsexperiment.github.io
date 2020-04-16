@@ -2,7 +2,7 @@
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
 var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg"];
-var currentProject;
+var currentProject = 0;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
@@ -23,8 +23,10 @@ window.addEventListener('mousemove', onMouseMove, false);
 window.onload = function(){
 
   next = document.getElementById("next");
+  back = document.getElementById("back");
   //console.log(next);
-  next.addEventListener('click', function(){changeProject("next")} , false);
+  back.addEventListener('click', function(){ changeProject("back") }, false);
+  next.addEventListener('click', function(){ changeProject("next") } , false);
 
 }
 
@@ -33,7 +35,6 @@ function init() {
     createScene();
     // Create sphere contained textures
     createModel(textureArray[0]);
-    currentProject = 0;
     render();
     // Controls with mouse, no longer useful
     //createOrbit();
@@ -78,12 +79,28 @@ function onMouseWheel(){
     }
 }
 function changeProject(eventType){
+  if (eventType == "next") {
+    console.log("array length" + textureArray.length)
+    if (currentProject < textureArray.length - 1) {
+      console.log("on est dans le trucla");
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+      scene.remove(mesh);
+      createModel(textureArray[currentProject+1]);
+      currentProject++;
+    }
+  }
+  else if (eventType == "back") {
+    if (currentProject > 0) {
+      console.log("on est dans le trucla");
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+      scene.remove(mesh);
+      createModel(textureArray[currentProject-1]);
+      currentProject--;
+    }
+  }
 
-    console.log("on est dans le trucla");
-    mesh.geometry.dispose();
-    mesh.material.dispose();
-    scene.remove(mesh);
-    createModel(textureArray[currentProject++]);
 }
 function onMouseMove(event){
   mouse.x = (event.clientX - windowsHalf.x);
