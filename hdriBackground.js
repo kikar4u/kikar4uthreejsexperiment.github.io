@@ -98,8 +98,11 @@ function fadeIn(calc){
   }, 2000)
   .start()
   .onStart(function(){
+    // opacity to 0 to create fade, 2s of duration
     $(".big_container").animate({opacity:0}, 2000, function(){
+      // at the end, we change content
           $(".content").after().load("projects/project"+(currentProject)+".html");
+      // and go back to normal opacity
           $(".big_container").animate({opacity:0.7}, 2000);
     });
 
