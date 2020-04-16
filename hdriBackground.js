@@ -169,6 +169,7 @@ function onMouseMove(event){
 }
 function createScene() {
     scene = new THREE.Scene();
+    scene.background = new THREE.Color('black');
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
     aspectRatio = WIDTH / HEIGHT;
@@ -226,6 +227,8 @@ function createModel(texturePath, opacity) {
       // use parameters to change map and opacity, according to others actions
         map: texture,
         side: THREE.BackSide,
+        // set transparency to true to have a black fade out
+        transparent: true,
         opacity:opacity,
     } );
     // new mesh
