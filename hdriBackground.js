@@ -34,7 +34,7 @@ function init() {
   // Create scene
     createScene();
     // Create sphere contained textures
-    createModel(textureArray[0]);
+    createModel(textureArray[0],1);
     render();
     // Controls with mouse, no longer useful
     //createOrbit();
@@ -82,12 +82,24 @@ function changeProject(eventType){
   if (eventType == "next") {
     console.log("array length" + textureArray.length)
     if (currentProject < textureArray.length - 1) {
-      console.log("on est dans le trucla");
-      mesh.geometry.dispose();
-      mesh.material.dispose();
-      scene.remove(mesh);
-      createModel(textureArray[currentProject+1]);
-      currentProject++;
+      var tweenon = new TWEEN.Tween(mesh.material).to({
+        opacity:0
+      }, 2000)
+      .start();
+      tweenon.onComplete(function(){
+        console.log("tween truc : " + tweenon);
+        console.log("on est dans le trucla");
+        mesh.geometry.dispose();
+        mesh.material.dispose();
+        scene.remove(mesh);
+        createModel(textureArray[currentProject+1], 0);
+        currentProject++;
+        tweenon = new TWEEN.Tween(mesh.material).to({
+          opacity:1
+        }, 2000)
+        .start();
+      });
+
     }
   }
   else if (eventType == "back") {
@@ -101,6 +113,9 @@ function changeProject(eventType){
     }
   }
 
+}
+function tweenTransition(mesh, opacity){
+  
 }
 function onMouseMove(event){
   mouse.x = (event.clientX - windowsHalf.x);
@@ -169,7 +184,7 @@ function resizeCanvas(){
     })
 }
 
-function createModel(texturePath) {
+function createModel(texturePath, opacity) {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
 
     let texture = new THREE.TextureLoader().load(texturePath);
@@ -181,25 +196,27 @@ function createModel(texturePath) {
     let material = new THREE.MeshBasicMaterial( {
         map: texture,
         side: THREE.BackSide,
+        opacity:opacity,
     } );
 
     mesh = new THREE.Mesh( geometry, material );
     mesh.scale.set( - 1, 1, 1 );
+
+    // Lights
     var light = new THREE.AmbientLight( 0x404040 ); // soft white light
     scene.add( light );
+
     var spotLight = new THREE.SpotLight( 0xffffff );
     spotLight.position.set( 100, 1000, 100 );
-
     spotLight.castShadow = true;
-
     spotLight.shadow.mapSize.width = 1024;
     spotLight.shadow.mapSize.height = 1024;
-
     spotLight.shadow.camera.near = 500;
     spotLight.shadow.camera.far = 4000;
     spotLight.shadow.camera.fov = 30;
-
     scene.add( spotLight );
+    // end Lights
+
     scene.add( mesh );
     console.log(camera.position);
 }
@@ -237,6 +254,7 @@ function createOrbit() {
 function loop() {
     stats.begin();
     requestAnimationFrame(loop);
+    TWEEN.update();
     renderer.render(scene, camera);
     stats.end();
 
