@@ -51,7 +51,7 @@ function init() {
 }
 
 function onMouseWheel(){
-
+  // maximum FOV, -10 so the user can zoom out
     var fovMAX = fieldOfView -10;
     var fovMIN = 5;
 
@@ -71,57 +71,86 @@ function onMouseWheel(){
     camera.fov = Math.max( Math.min( camera.fov, fovMAX ), fovMIN );
     camera.projectionMatrix =    (new THREE.Matrix4()).makePerspective( camera.fov, window.innerWidth / window.innerHeight, 1, 1100, camera.near, camera.far );
     camera.updateProjectionMatrix();
-// scrolling de page
+// scrolling
+// old, may be deleted because no longer usefull
     if (camera.fov == fovMAX && event.detail >= 3 || event.wheelDeltaY >= 3 ) {
       console.log("Scrolling : " + event.detail);
-
-
     }
 }
-function changeProject(eventType){
-  if (eventType == "next") {
-    console.log("array length" + textureArray.length)
-    if (currentProject < textureArray.length - 1) {
-      var tweenon = new TWEEN.Tween(mesh.material).to({
-        opacity:0
-      }, 2000)
-      .start();
-      tweenon.onComplete(function(){
-        console.log("tween truc : " + tweenon);
-        console.log("on est dans le trucla");
-        mesh.geometry.dispose();
-        mesh.material.dispose();
-        scene.remove(mesh);
-        createModel(textureArray[currentProject+1], 0);
-        currentProject++;
-        tweenon = new TWEEN.Tween(mesh.material).to({
-          opacity:1
-        }, 2000)
-        .start();
-      });
+function fadeIn(calc){
+  // document.getElementsByTagName("canvas")[0].style.animationName = "fadeToBlack";
+  // use tween to fade between materials using material opacity
+  var tweenon = new TWEEN.Tween(mesh.material).to({
+    opacity:0,
+    // 2000 is time of animation, in ms
+  }, 2000)
+  .start();
+  // at end of animation, we change the material
+  tweenon.onComplete(function(){
+    // console.log("tween truc : " + tweenon);
+    // console.log("on est dans le trucla");
+    // delete old mesh
+    mesh.geometry.dispose();
+    // delete old material
+    mesh.material.dispose();
+    // remove mesh from scene
+    scene.remove(mesh);
+    // to go back and forth hdris, we use a array, and a counter to check at which projet the user is
+    // this prevent out of range when going back and being in the first project at the same time
+    if (calc == 1) {
+      console.log("current projet if positif " + currentProject);
+      // create object, using next hdris data from array , and rendering it in the scene
+      // createModel(texture, startOpacity)
+      createModel(textureArray[currentProject+1], 0);
+      // we ++ the counter
+      currentProject++;
+      console.log("current projet if positif " + currentProject);
+    }
+    if (calc != 1){
+      console.log("current projet " + currentProject);
+      // same thing, but for going back in the array
+      createModel(textureArray[currentProject-1], 0);
+      currentProject--;
+      console.log("current projet " + currentProject);
+    }
+    // fadeIn from 0 opacity to 1
+    tweenon = new TWEEN.Tween(mesh.material).to({
 
+      opacity:1,
+
+    }, 2000)
+    .start();
+  });
+}
+function changeProject(eventType){
+  // check which type of event occured, does the user want to go back, or to the next project ?
+  if (eventType == "next") {
+    console.log("array length" + textureArray.length);
+    if (currentProject < textureArray.length - 1) {
+      // animation transition + createModel
+      // fadeIn(calc) calc is a int to know which way need to go in the array, back, or forth
+      fadeIn(1);
     }
   }
   else if (eventType == "back") {
     if (currentProject > 0) {
-      console.log("on est dans le trucla");
-      mesh.geometry.dispose();
-      mesh.material.dispose();
-      scene.remove(mesh);
-      createModel(textureArray[currentProject-1]);
-      currentProject--;
+      fadeIn(0);
+      // console.log("on est dans le trucla");
+      // mesh.geometry.dispose();
+      // mesh.material.dispose();
+      // scene.remove(mesh);
+      // createModel(textureArray[currentProject-1]);
+      // currentProject--;
     }
   }
 
 }
-function tweenTransition(mesh, opacity){
-  
-}
+// function to follow mouse mouvement and allow user to move the hdris
 function onMouseMove(event){
   mouse.x = (event.clientX - windowsHalf.x);
   mouse.y = (event.clientY - windowsHalf.x);
-  // get mouse position
-      target.x = (1-mouse.x) * 0.005;
+  // get mouse position,
+      target.x = (1-mouse.x) * 0.005; // 0.005 is speed
       target.y = (1-mouse.y) * 0.002;
       mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
       mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
@@ -186,7 +215,7 @@ function resizeCanvas(){
 
 function createModel(texturePath, opacity) {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
-
+    // create the texture
     let texture = new THREE.TextureLoader().load(texturePath);
     console.log("texture path: " + texturePath);
     // stop resize on Chrome
@@ -194,38 +223,41 @@ function createModel(texturePath, opacity) {
     // NOTE: Work on firefox 76, but framerate is quite low compared to Chrome based browser
     texture.minFilter = THREE.LinearFilter;
     let material = new THREE.MeshBasicMaterial( {
+      // use parameters to change map and opacity, according to others actions
         map: texture,
         side: THREE.BackSide,
         opacity:opacity,
     } );
-
+    // new mesh
     mesh = new THREE.Mesh( geometry, material );
     mesh.scale.set( - 1, 1, 1 );
 
     // Lights
-    var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-    scene.add( light );
-
-    var spotLight = new THREE.SpotLight( 0xffffff );
-    spotLight.position.set( 100, 1000, 100 );
-    spotLight.castShadow = true;
-    spotLight.shadow.mapSize.width = 1024;
-    spotLight.shadow.mapSize.height = 1024;
-    spotLight.shadow.camera.near = 500;
-    spotLight.shadow.camera.far = 4000;
-    spotLight.shadow.camera.fov = 30;
-    scene.add( spotLight );
+    // var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    // scene.add( light );
+    // var spotLight = new THREE.SpotLight( 0xffffff );
+    // spotLight.position.set( 100, 1000, 100 );
+    // spotLight.castShadow = true;
+    // spotLight.shadow.mapSize.width = 1024;
+    // spotLight.shadow.mapSize.height = 1024;
+    // spotLight.shadow.camera.near = 500;
+    // spotLight.shadow.camera.far = 4000;
+    // spotLight.shadow.camera.fov = 30;
+    // scene.add( spotLight );
     // end Lights
 
     scene.add( mesh );
     console.log(camera.position);
 }
+// just some stats for optimization
+// showPanel(int) 0:fps 1: latency 2: mb 3+ custom
 function statsPerf(){
   stats = new Stats();
   stats.showPanel(1);
-  stats.showPanel(0);
+  stats.showPanel(1);
   document.body.appendChild( stats.dom );
 }
+
 function render() {
     renderer = new THREE.WebGLRenderer({alpha: true, antialias:true});
     renderer.setSize(WIDTH, HEIGHT);
@@ -257,7 +289,6 @@ function loop() {
     TWEEN.update();
     renderer.render(scene, camera);
     stats.end();
-
     //control.update();
 }
 // add mesh with fbx format

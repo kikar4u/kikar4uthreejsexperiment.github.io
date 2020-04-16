@@ -9,7 +9,13 @@ body
     margin: 0;
     padding: 0;
 }
-
+/* @keyframes fadeToBlack {
+  0%   {background-color: transparent;}
+  100% {background-color: black;}
+}
+canvas{
+  animation-duration: 4s;
+} */
 .big_container
 {
     /* pointer-events: none; */
@@ -24,6 +30,7 @@ body
     transform: translate(-50%,-50%);
     color: white;
     font-family: 'Open Sans Condensed', sans-serif;
+
 }
 
 .big_container .author
