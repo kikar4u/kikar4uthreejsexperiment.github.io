@@ -2,6 +2,8 @@
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
 var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg"];
+var domBig_Container;
+
 var currentProject = 0;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
@@ -21,6 +23,8 @@ window.addEventListener('DOMMouseScroll', onMouseWheel, false);
 window.addEventListener('mousemove', onMouseMove, false);
 
 window.onload = function(){
+//  domBig_Container[1].style.visibility = "visible";
+  $(".content").after().load("projects/project0.html");
 
   next = document.getElementById("next");
   back = document.getElementById("back");
@@ -42,6 +46,7 @@ function init() {
     resizeCanvas();
     // Update function
     loop();
+
     // get webgl information, only usefull for debug
     var can = document.getElementsByTagName("canvas")[0];
     var gl =    can.getContext('webgl');
@@ -78,13 +83,28 @@ function onMouseWheel(){
     }
 }
 function fadeIn(calc){
+
   // document.getElementsByTagName("canvas")[0].style.animationName = "fadeToBlack";
   // use tween to fade between materials using material opacity
+
+  // var tweenInnerHtml = new TWEEN.Tween(domBig_Container[currentProject]).to({
+  //   opacity:1,
+  //   visibility:"visible",
+  // }, 2000)
+  // .start();
   var tweenon = new TWEEN.Tween(mesh.material).to({
     opacity:0,
     // 2000 is time of animation, in ms
   }, 2000)
-  .start();
+  .start()
+  .onStart(function(){
+    $(".big_container").animate({opacity:0}, 2000, function(){
+          $(".content").after().load("projects/project"+(currentProject)+".html");
+          $(".big_container").animate({opacity:0.7}, 2000);
+    });
+
+
+  });
   // at end of animation, we change the material
   tweenon.onComplete(function(){
     // console.log("tween truc : " + tweenon);
@@ -95,6 +115,7 @@ function fadeIn(calc){
     mesh.material.dispose();
     // remove mesh from scene
     scene.remove(mesh);
+
     // to go back and forth hdris, we use a array, and a counter to check at which projet the user is
     // this prevent out of range when going back and being in the first project at the same time
     if (calc == 1) {
@@ -113,6 +134,8 @@ function fadeIn(calc){
       currentProject--;
       console.log("current projet " + currentProject);
     }
+
+
     // fadeIn from 0 opacity to 1
     tweenon = new TWEEN.Tween(mesh.material).to({
 

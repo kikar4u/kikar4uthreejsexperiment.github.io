@@ -16,10 +16,14 @@ body
 canvas{
   animation-duration: 4s;
 } */
+.content{
+  display: contents;
+
+}
 .big_container
 {
     /* pointer-events: none; */
-    opacity: 0.7;
+    opacity:0.7;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -48,12 +52,12 @@ canvas{
     letter-spacing: 20px;
 }
 
-.litle_container
+.little_container
 {
     display: flex;
 }
 
-.litle_container h4
+.little_container h4
 {
     font-size: 1rem;
     text-transform: uppercase;
