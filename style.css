@@ -56,7 +56,9 @@ canvas{
 {
     display: flex;
 }
-
+.big_container h2{
+  cursor: pointer;
+}
 .little_container h4
 {
     font-size: 1rem;

@@ -173,7 +173,7 @@ function onMouseMove(event){
   mouse.x = (event.clientX - windowsHalf.x);
   mouse.y = (event.clientY - windowsHalf.x);
   // get mouse position,
-      target.x = (1-mouse.x) * 0.005; // 0.005 is speed
+      target.x = (1-mouse.x) * 0.002; // 0.005 is speed
       target.y = (1-mouse.y) * 0.002;
       mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
       mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
