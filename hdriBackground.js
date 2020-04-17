@@ -33,7 +33,24 @@ window.onload = function(){
   next.addEventListener('click', function(){ changeProject("next") } , false);
 
 }
+function preloader()
+{
 
+     // Créer l'objet
+     imageObj = new Image();
+
+     // Définir la liste d'images
+     images = new Array();
+     images[0]="hdri/testfelix&paul.jpg"
+     images[1]="hdri/quattro_canti.jpg"
+     images[2]="hdri/test.jpg"
+
+     // Démarrer le préchargement
+     for(var i=0; i<= images.length; i++)
+     {
+          imageObj.src=images[i];
+     }
+}
 function init() {
   // Create scene
     createScene();
