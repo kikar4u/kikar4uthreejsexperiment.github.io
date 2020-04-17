@@ -12,14 +12,14 @@ body
 canvas {
   width: 100vw;
   height: 100vh;
-  display: block; }
-/* @keyframes fadeToBlack {
-  0%   {background-color: transparent;}
-  100% {background-color: black;}
+  display: block;
 }
-canvas{
-  animation-duration: 4s;
-} */
+.loading{
+    height: 10em;
+    display: flex;
+    align-items: center;
+    justify-content: center }
+
 .content{
   display: contents;
 

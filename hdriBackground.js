@@ -2,6 +2,7 @@
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
 var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg"];
+var imgArray = [];
 var domBig_Container;
 
 var currentProject = 0;
@@ -17,40 +18,54 @@ var next;
 // Déclaration variables
 
 
-window.addEventListener('load', init, false);
-window.addEventListener('wheel', onMouseWheel, false);
-window.addEventListener('DOMMouseScroll', onMouseWheel, false);
-window.addEventListener('mousemove', onMouseMove, false);
+
 
 window.onload = function(){
 //  domBig_Container[1].style.visibility = "visible";
-  $(".content").after().load("projects/project0.html");
-
-  next = document.getElementById("next");
-  back = document.getElementById("back");
-  //console.log(next);
-  back.addEventListener('click', function(){ changeProject("back") }, false);
-  next.addEventListener('click', function(){ changeProject("next") } , false);
 
 }
-function preloader()
-{
+  function preload(arrayOfImages) {
 
-     // Créer l'objet
-     imageObj = new Image();
+    var i = 0;
+    $(arrayOfImages).each(function(){
+        // $('<img/>')[0].src = this;
 
-     // Définir la liste d'images
-     images = new Array();
-     images[0]="hdri/testfelix&paul.jpg"
-     images[1]="hdri/quattro_canti.jpg"
-     images[2]="hdri/test.jpg"
+        // Alternatively you could use:
+        currentImg = (new Image());
+        currentImg.src = this;
+        currentImg.onload = function(){
+          i++;
+          console.log("img" + i + "finie");
+          if (i == arrayOfImages.length) {
+            $("#world").css({"display" : "block"});
+            $(".loading").remove();
+            console.log("everything is done");
+            $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
+            $(".content").after().load("projects/project0.html");
 
-     // Démarrer le préchargement
-     for(var i=0; i<= images.length; i++)
-     {
-          imageObj.src=images[i];
-     }
+            next = document.getElementById("next");
+            back = document.getElementById("back");
+            //console.log(next);
+            back.addEventListener('click', function(){ changeProject("back") }, false);
+            next.addEventListener('click', function(){ changeProject("next") } , false);
+            window.addEventListener('load', init, false);
+            window.addEventListener('wheel', onMouseWheel, false);
+            window.addEventListener('DOMMouseScroll', onMouseWheel, false);
+            window.addEventListener('mousemove', onMouseMove, false);
+          }
+        }
+
+
+    });
+
 }
+
+// Usage:
+
+preload(textureArray);
+
+//
+// $("#world").css({"display":"none"});
 function init() {
   // Create scene
     createScene();
