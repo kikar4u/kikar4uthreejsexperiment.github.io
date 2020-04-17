@@ -10,42 +10,42 @@ const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
 
-var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
-var PI_2 = Math.PI / 2;
+// var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
+// var PI_2 = Math.PI / 2;
 
 let WIDTH, HEIGHT;
 var next;
-// Déclaration variables
 
 
-
-
-window.onload = function(){
-//  domBig_Container[1].style.visibility = "visible";
-
-}
+preload(textureArray);
+// loading image before load, prevent long loading during navigation
   function preload(arrayOfImages) {
 
     var i = 0;
     $(arrayOfImages).each(function(){
-        // $('<img/>')[0].src = this;
-
-        // Alternatively you could use:
+      // caching each image
         currentImg = (new Image());
         currentImg.src = this;
+        // when an image is finished loading :
         currentImg.onload = function(){
+          // count nbrs of images loaded
           i++;
           console.log("img" + i + "finie");
+
           if (i == arrayOfImages.length) {
+            // if numbers of images correspond to the number of project / images
+            // change main content to visible
             $("#world").css({"display" : "block"});
+            // remove loading screen
             $(".loading").remove();
             console.log("everything is done");
+            // add project details
             $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
             $(".content").after().load("projects/project0.html");
-
+            // launch every step of rendering 3D view
+            // create event listener used by 3D application
             next = document.getElementById("next");
             back = document.getElementById("back");
-            //console.log(next);
             back.addEventListener('click', function(){ changeProject("back") }, false);
             next.addEventListener('click', function(){ changeProject("next") } , false);
             window.addEventListener('load', init, false);
@@ -53,17 +53,12 @@ window.onload = function(){
             window.addEventListener('DOMMouseScroll', onMouseWheel, false);
             window.addEventListener('mousemove', onMouseMove, false);
           }
-        }
 
+        }
 
     });
 
 }
-
-// Usage:
-
-preload(textureArray);
-
 //
 // $("#world").css({"display":"none"});
 function init() {
@@ -323,7 +318,7 @@ function render() {
     renderer = new THREE.WebGLRenderer({alpha: true, antialias:true});
     renderer.setSize(WIDTH, HEIGHT);
     renderer.setClearColor(0x004444);
-    renderer.shadowMapEnabled = true;
+    renderer.shadowMap.enabled = true;
     renderer.render(scene, camera);
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
