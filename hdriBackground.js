@@ -52,6 +52,8 @@ preload(textureArray);
             window.addEventListener('wheel', onMouseWheel, false);
             window.addEventListener('DOMMouseScroll', onMouseWheel, false);
             window.addEventListener('mousemove', onMouseMove, false);
+            window.addEventListener("touchmove", onFingerMove, false);
+
           }
 
         }
@@ -198,15 +200,25 @@ function changeProject(eventType){
   }
 
 }
-// function to follow mouse mouvement and allow user to move the hdris
-function onMouseMove(event){
-  mouse.x = (event.clientX - windowsHalf.x);
-  mouse.y = (event.clientY - windowsHalf.x);
+function onFingerMove(event){
+  mouse.x = (event.touches[0].clientX - windowsHalf.x);
+  mouse.y = (event.touches[0].clientY - windowsHalf.x);
   // get mouse position,
       target.x = (1-mouse.x) * 0.002; // 0.005 is speed
       target.y = (1-mouse.y) * 0.002;
       mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
       mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
+  console.log("levent du doigt" + event.touches[0].clientX);
+}
+// function to follow mouse mouvement and allow user to move the hdris
+function onMouseMove(event){
+    mouse.x = (event.clientX - windowsHalf.x);
+    mouse.y = (event.clientY - windowsHalf.x);
+    // get mouse position,
+        target.x = (1-mouse.x) * 0.002; // 0.005 is speed
+        target.y = (1-mouse.y) * 0.002;
+        mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
+        mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
 
     //Second method using quaternion
   // var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
