@@ -201,14 +201,16 @@ function changeProject(eventType){
 
 }
 function onFingerMove(event){
-  mouse.x = (event.touches[0].clientX - windowsHalf.x);
-  mouse.y = (event.touches[0].clientY - windowsHalf.x);
-  // get mouse position,
-      target.x = (1-mouse.x) * 0.002; // 0.005 is speed
-      target.y = (1-mouse.y) * 0.002;
-      mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
-      mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
-  console.log("levent du doigt" + event.touches[0].clientX);
+  event.preventDefault();
+  createOrbit(10, 50, true, true, 0.5);
+  // mouse.x = (event.touches[0].pageX - windowsHalf.x);
+  // mouse.y = (event.touches[0].pageY - windowsHalf.x);
+  // // get mouse position,
+  //     target.x = (1-mouse.x) * 0.005; // 0.005 is speed
+  //     target.y = (1-mouse.y) * 0.002;
+  //     mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x); //vertical rotation
+  //     mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y); //horizontal rotation
+  // console.log("levent du doigt" + event.touches[0].clientX);
 }
 // function to follow mouse mouvement and allow user to move the hdris
 function onMouseMove(event){
@@ -273,9 +275,9 @@ function resizeCanvas(){
     {
         WIDTH = window.innerWidth;
         HEIGHT = window.innerHeight;
-        camera.aspect = WIDTH / HEIGHT
-        camera.updateProjectionMatrix()
-        renderer.setSize(WIDTH, HEIGHT)
+        camera.aspect = WIDTH / HEIGHT;
+        camera.updateProjectionMatrix();
+        renderer.setSize(WIDTH, HEIGHT);
     })
 }
 
@@ -328,6 +330,7 @@ function statsPerf(){
 
 function render() {
     renderer = new THREE.WebGLRenderer({alpha: true, antialias:true});
+    // renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(WIDTH, HEIGHT);
     renderer.setClearColor(0x004444);
     renderer.shadowMap.enabled = true;
@@ -336,17 +339,17 @@ function render() {
     container.appendChild(renderer.domElement);
 }
 // old way of moving camera
-function createOrbit() {
-    control = new THREE.OrbitControls(camera, renderer.domElement);
+function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
+    control = new THREE.OrbitControls(camera, renderer.touchmove);
     control.object.position.set(0, 0, 200);
-    control.minDistance = 0;
-    control.enableZoom = false;
+    control.minDistance = minDistance;
+    control.enableZoom = enableZoom;
     // set to 10000
-    control.maxDistance = 50;
+    control.maxDistance = maxDistance;
     control.target.set(0, 0, 0);
-    control.autoRotate = false;
+    control.autoRotate = autoRotate;
     control.autoRotateSpeed = 3;
-    control.rotateSpeed = 0.2;
+    control.rotateSpeed = speed;
     control.update();
 }
 

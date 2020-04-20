@@ -15,6 +15,7 @@ canvas {
   display: block;
 }
 .loading{
+
     height: 10em;
     display: flex;
     align-items: center;
