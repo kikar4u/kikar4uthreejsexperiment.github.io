@@ -14,8 +14,17 @@ canvas {
   height: 100vh;
   display: block;
 }
+.column{
+  flex: 25%;
+  max-width: 25%;
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+}
 .menu{
   height: 100%;
+  display: flex;
+  flex-wrap: wrap;
   width: 0;
   position: fixed;
   z-index: 2;
@@ -24,22 +33,32 @@ canvas {
   background-color: rgba(0,0,0);
   overflow-x: hidden;
   padding-top: 60px;
+  align-content: center;
   transition: 0.5s;
 }
+.menuContent{
+  /* display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+ */
+   color:white;
+}
 .menu a{
+  position: relative;
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 3.289473684210526vh;
   color: #818181;
-  display: block;
+  vertical-align: middle;
   transition: 0.3s;
 }
 .bar{
   display: flex;
-position: fixed;
-color: white;
-background-color: rgba(0,0,0,0.5);
-z-index: 1;
+  position: fixed;
+  color: white;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1;
 }
 .loading{
 
