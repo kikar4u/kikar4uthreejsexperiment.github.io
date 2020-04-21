@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg"];
+var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg", "hdri/studio_small_06.jpg"];
 var imgArray = [];
 var domBig_Container;
 
@@ -19,7 +19,7 @@ var next;
 
 preload(textureArray);
 // loading image before load, prevent long loading during navigation
-  function preload(arrayOfImages) {
+function preload(arrayOfImages) {
 
     var i = 0;
     $(arrayOfImages).each(function(){
@@ -71,7 +71,7 @@ function init() {
     render();
     // Controls with mouse, no longer useful
     //createOrbit();
-    statsPerf();
+    //statsPerf();
     resizeCanvas();
     // Update function
     loop();
@@ -202,7 +202,8 @@ function changeProject(eventType){
 }
 function onFingerMove(event){
   event.preventDefault();
-  createOrbit(10, 50, true, true, 0.5);
+  // createOrbit(minDistance, maxDistance, enableZoom, autoRotate, moveSpeed)
+  createOrbit(10, 50, true, false, 0.5);
   // mouse.x = (event.touches[0].pageX - windowsHalf.x);
   // mouse.y = (event.touches[0].pageY - windowsHalf.x);
   // // get mouse position,
@@ -213,14 +214,16 @@ function onFingerMove(event){
   // console.log("levent du doigt" + event.touches[0].clientX);
 }
 // function to follow mouse mouvement and allow user to move the hdris
+
 function onMouseMove(event){
-    mouse.x = (event.clientX - windowsHalf.x);
-    mouse.y = (event.clientY - windowsHalf.x);
+
+  mouse.x = (event.clientX - windowsHalf.x);
+  mouse.y = (event.clientY - windowsHalf.x);
     // get mouse position,
-        target.x = (1-mouse.x) * 0.002; // 0.005 is speed
-        target.y = (1-mouse.y) * 0.002;
-        mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
-        mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
+  target.x = (1-mouse.x) * 0.002; // 0.005 is speed
+  target.y = (1-mouse.y) * 0.002;
+  mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
+  mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
 
     //Second method using quaternion
   // var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
@@ -234,6 +237,7 @@ function onMouseMove(event){
     // console.log(" rotation x " + target.x + " Rotation y " + target.y);
     //console.log(" rotation x " + mesh.rotation.x + " Rotation y " + mesh.rotation.y + " rotation z " + mesh.rotation.z);
 }
+
 function createScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color('black');
@@ -355,11 +359,11 @@ function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
 
 
 function loop() {
-    stats.begin();
+    //stats.begin();
     requestAnimationFrame(loop);
     TWEEN.update();
     renderer.render(scene, camera);
-    stats.end();
+    //stats.end();
     //control.update();
 }
 // add mesh with fbx format
@@ -376,3 +380,14 @@ function loop() {
 //   scene.add( object );
 //
 // } );
+function openNav(){
+  if ($(window).width < 1080) {
+    document.getElementById('menu').style.width="100%";
+  }
+  else{
+    document.getElementById('menu').style.width = "100%";
+  }
+}
+function closeNav(){
+  document.getElementById('menu').style.width ="0";
+}
