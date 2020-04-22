@@ -424,6 +424,9 @@ function closeNav(){
   document.getElementById('menu').style.width ="0";
 }
 function changeTextMenu(classToDisplay){
+  $(".menuContent").animate({opacity:0}, 900);
   $(".menuContent").css({"display":"none"});
+
   $("."+classToDisplay).css({"display" : "block"});
+  $(".menuContent").animate({opacity:1}, 900);
 }

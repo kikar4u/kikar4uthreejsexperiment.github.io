@@ -113,7 +113,7 @@ canvas {
 .big_container .title
 {
     text-align: center;
-    font-size: 3rem;
+    font-size: 5vh;
     text-transform: uppercase;
     letter-spacing: 20px;
 }
@@ -127,7 +127,7 @@ canvas {
 }
 .little_container h4
 {
-    font-size: 1rem;
+    font-size: 2vh;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-right: 2rem;
@@ -136,7 +136,7 @@ canvas {
 
 .big_container .content_description
 {
-    font-size: 1rem;
+    font-size: 2vh;
     width: 40%;
     letter-spacing: 2px;
     line-height: 20px;
@@ -146,7 +146,7 @@ canvas {
 
 .big_container .content_credits
 {
-    font-size: 1rem;
+    font-size: 2vh;
     width: 40%;
     letter-spacing: 2px;
     line-height: 20px;
