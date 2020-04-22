@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti.jpg", "hdri/test.jpg", "hdri/studio_small_06.jpg"];
+var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti_16k.jpg", "img/cityatnight.jpg", "hdri/studio_small_06.jpg", "img/darkalley.jpg"];
 var imgArray = [];
 var domBig_Container;
 
@@ -128,11 +128,15 @@ function fadeIn(calc){
   .start()
   .onStart(function(){
     // opacity to 0 to create fade, 2s of duration
+    // fade whenever there is no hdri but an image as project cover
+    $(".projectImg").animate({opacity:0}, 2000);
     $(".big_container").animate({opacity:0}, 2000, function(){
       // at the end, we change content
           $(".content").after().load("projects/project"+(currentProject)+".html");
       // and go back to normal opacity
           $(".big_container").animate({opacity:0.7}, 2000);
+          // fade img to 1
+          $(".projectImg").animate({opacity:1}, 2000);
     });
 
 
@@ -147,28 +151,56 @@ function fadeIn(calc){
     mesh.material.dispose();
     // remove mesh from scene
     scene.remove(mesh);
-
+    var patt = /img/i;
+    // regexp used to track if it's an image or and hdri
     // to go back and forth hdris, we use a array, and a counter to check at which projet the user is
     // this prevent out of range when going back and being in the first project at the same time
     if (calc == 1) {
       console.log("current projet if positif " + currentProject);
       // create object, using next hdris data from array , and rendering it in the scene
       // createModel(texture, startOpacity)
-      createModel(textureArray[currentProject+1], 0);
+
+      if (patt.test(textureArray[currentProject+1])) {
+
+        console.log("Okay ! on est dans la regex");
+        $("canvas").css({"visibility":"hidden"});
+        $("#world").css({"backgroundImage": "url("+textureArray[currentProject+1]+")"});
+
+      }
+      else{
+
+        $("canvas").css({"visibility":"visible"});
+        createModel(textureArray[currentProject+1], 0);
+
+      }
+
       // we ++ the counter
       currentProject++;
       console.log("current projet if positif " + currentProject);
     }
     if (calc != 1){
-      console.log("current projet " + currentProject);
-      // same thing, but for going back in the array
-      createModel(textureArray[currentProject-1], 0);
+
+      if (patt.test(textureArray[currentProject-1])) {
+
+        $("canvas").css({"visibility":"hidden"});
+        $("#world").css({"backgroundImage": "url("+textureArray[currentProject-1]+")"});
+
+      }
+      else{
+
+        console.log("current projet " + currentProject);
+        $("canvas").css({"visibility":"visible"});
+        // same thing, but for going back in the array
+        createModel(textureArray[currentProject-1], 0);
+
+      }
+
       currentProject--;
       console.log("current projet " + currentProject);
     }
 
 
-    // fadeIn from 0 opacity to 1
+    // fadeIn from 0 opacity to 1 for material (hdri)
     tweenon = new TWEEN.Tween(mesh.material).to({
 
       opacity:1,
@@ -183,7 +215,7 @@ function changeProject(eventType){
     console.log("array length" + textureArray.length);
     if (currentProject < textureArray.length - 1) {
       // animation transition + createModel
-      // fadeIn(calc) calc is a int to know which way need to go in the array, back, or forth
+      // fadeIn(calc) calc is an int to know which way need to go in the array, back, or forth
       fadeIn(1);
     }
   }
