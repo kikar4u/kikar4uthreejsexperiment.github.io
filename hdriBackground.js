@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti_16k.jpg", "img/cityatnight.jpg", "hdri/studio_small_06.jpg", "img/darkalley.jpg"];
+var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti_16k.jpg", "img/cityatnight.jpg", "hdri/concorde.jpg", "img/darkalley.jpg"];
 var imgArray = [];
 var domBig_Container;
 
@@ -422,4 +422,8 @@ function openNav(){
 }
 function closeNav(){
   document.getElementById('menu').style.width ="0";
+}
+function changeTextMenu(classToDisplay){
+  $(".menuContent").css({"display":"none"});
+  $("."+classToDisplay).css({"display" : "block"});
 }
