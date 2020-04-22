@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti_16k.jpg", "img/cityatnight.jpg", "hdri/concorde.jpg", "img/darkalley.jpg"];
+var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti_16k.jpg", "img/cityatnight.jpg", "hdri/concorde_optimized.jpg", "img/darkalley.jpg"];
 var imgArray = [];
 var domBig_Container;
 
