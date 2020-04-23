@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg", "img/PHOTO4_31072017.jpg"];
+var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO_06112017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg", "img/PHOTO3_31072017.jpg"];
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var domBig_Container;
@@ -43,14 +43,15 @@ function preload(arrayOfImages) {
             $(".loading").remove();
             console.log("everything is done");
             // add project details
-            $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
+            // $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
             $(".content").after().load("projects/project0.html");
+
             // launch every step of rendering 3D view
             // create event listener used by 3D application
-            next = document.getElementById("next");
-            back = document.getElementById("back");
-            back.addEventListener('click', function(){ changeProject("back") }, false);
-            next.addEventListener('click', function(){ changeProject("next") } , false);
+            // next = document.getElementById("next");
+            // back = document.getElementById("back");
+            // back.addEventListener('click', function(){ changeProject("back") }, false);
+            // next.addEventListener('click', function(){ changeProject("next") } , false);
             window.addEventListener('load', init, false);
             window.addEventListener('wheel', onMouseWheel, false);
             window.addEventListener('DOMMouseScroll', onMouseWheel, false);
@@ -58,7 +59,7 @@ function preload(arrayOfImages) {
             window.addEventListener("touchmove", onFingerMove, false);
             window.addEventListener("mousemove", movingImg, false);
             displayMenuProject(textureArray);
-
+            // addAudio(textureArray[0]);
           }
 
         }
@@ -73,7 +74,6 @@ function init() {
     createScene();
     // Create sphere contained textures
     createModel(textureArray[0],1, rotationPerProject[0]);
-
     render();
     // Controls with mouse, no longer useful
     //createOrbit();
@@ -140,7 +140,7 @@ function fadeIn(calc){
       // at the end, we change content
           $(".content").after().load("projects/project"+(currentProject)+".html");
       // and go back to normal opacity
-          $(".big_container").animate({opacity:0.7}, 2000);
+          $(".big_container").animate({opacity:1.0}, 2000);
           // fade img to 1
           $(".projectImg").animate({opacity:1}, 2000);
     });
@@ -464,7 +464,18 @@ function changeTextMenu(classToDisplay){
   $("."+classToDisplay).css({"display" : "block"});
 }
 function displayMenuProject(array){
+
     for (var i = 0; i < array.length; i++) {
       $(".selectionProject").append("<a id="+ i +" onclick=changeProject('change',"+ i + ")> PROJECT NUMBER" + i + "</a>");
     }
+}
+// function addAudio(project){
+//   console.log("dans le addaudio");
+//   $(".audioPlay").append("<p onclick=playAudio("+project+")>PlayAudio</p>");
+//   document.getElementsByClassName(".audioPlay").innerHTML = "<p onclick=playAudio("+project+")>PlayAudio</p>";
+// }
+function playAudio(project){
+  audio = document.getElementById("audio");
+  audio.play();
+  audio.volume = 0.5;
 }
