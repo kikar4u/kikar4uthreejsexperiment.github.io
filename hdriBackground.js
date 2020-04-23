@@ -1,11 +1,13 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/testfelix&paul.jpg", "img/PHOTO3_31072017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/concorde_optimized.jpg", "img/PHOTO4_31072017.jpg"];
+var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg", "img/PHOTO4_31072017.jpg"];
+var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var domBig_Container;
 
 var currentProject = 0;
+var targetProject;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
@@ -18,6 +20,7 @@ var next;
 
 
 preload(textureArray);
+
 // loading image before load, prevent long loading during navigation
 function preload(arrayOfImages) {
 
@@ -54,6 +57,7 @@ function preload(arrayOfImages) {
             window.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener("touchmove", onFingerMove, false);
             window.addEventListener("mousemove", movingImg, false);
+            displayMenuProject(textureArray);
 
           }
 
@@ -68,7 +72,8 @@ function init() {
   // Create scene
     createScene();
     // Create sphere contained textures
-    createModel(textureArray[0],1);
+    createModel(textureArray[0],1, rotationPerProject[0]);
+
     render();
     // Controls with mouse, no longer useful
     //createOrbit();
@@ -161,44 +166,45 @@ function fadeIn(calc){
       // create object, using next hdris data from array , and rendering it in the scene
       // createModel(texture, startOpacity)
 
-      if (patt.test(textureArray[currentProject+1])) {
+      if (patt.test(textureArray[targetProject])) {
 
         console.log("Okay ! on est dans la regex");
         $("canvas").css({"visibility":"hidden"});
-        $("#world").css({"backgroundImage": "url("+textureArray[currentProject+1]+")"});
+        $("#world").css({"backgroundImage": "url("+textureArray[targetProject]+")"});
 
       }
       else{
 
         $("canvas").css({"visibility":"visible"});
-        createModel(textureArray[currentProject+1], 0);
+        createModel(textureArray[targetProject], 0, rotationPerProject[targetProject]);
+        console.log("tableau :" + textureArray[targetProject]);
 
       }
 
       // we ++ the counter
-      currentProject++;
+      currentProject = targetProject;
       console.log("current projet if positif " + currentProject);
     }
-    if (calc != 1){
-
-      if (patt.test(textureArray[currentProject-1])) {
-
-        $("canvas").css({"visibility":"hidden"});
-        $("#world").css({"backgroundImage": "url("+textureArray[currentProject-1]+")"});
-
-      }
-      else{
-
-        console.log("current projet " + currentProject);
-        $("canvas").css({"visibility":"visible"});
-        // same thing, but for going back in the array
-        createModel(textureArray[currentProject-1], 0);
-
-      }
-
-      currentProject--;
-      console.log("current projet " + currentProject);
-    }
+    // if (calc != 1){
+    //
+    //   if (patt.test(textureArray[targetProject])) {
+    //
+    //     $("canvas").css({"visibility":"hidden"});
+    //     $("#world").css({"backgroundImage": "url("+textureArray[targetProject]+")"});
+    //
+    //   }
+    //   else{
+    //
+    //     console.log("current projet " + currentProject);
+    //     $("canvas").css({"visibility":"visible"});
+    //     // same thing, but for going back in the array
+    //     createModel(textureArray[targetProject], 0);
+    //
+    //   }
+    //
+    //   currentProject--;
+    //   console.log("current projet " + currentProject);
+    // }
 
 
     // fadeIn from 0 opacity to 1 for material (hdri)
@@ -210,7 +216,13 @@ function fadeIn(calc){
     .start();
   });
 }
-function changeProject(eventType){
+function changeProject(eventType, id){
+  targetProject = parseInt(id);
+  console.log(targetProject);
+  if (eventType == "change") {
+    fadeIn(1);
+  }
+
   // check which type of event occured, does the user want to go back, or to the next project ?
   if (eventType == "next") {
     console.log("array length" + textureArray.length);
@@ -295,6 +307,7 @@ function createScene() {
     nearPlane = 1;
     farPlane = 1000;
     camera = new THREE.PerspectiveCamera(fieldOfView, window.innerWidth / window.innerHeight, nearPlane, farPlane);
+
 }
 
 // don't work, maybe because it is based on older three js version
@@ -333,7 +346,7 @@ function resizeCanvas(){
     })
 }
 
-function createModel(texturePath, opacity) {
+function createModel(texturePath, opacity, rotation) {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
     // create the texture
     let texture = new THREE.TextureLoader().load(texturePath);
@@ -353,6 +366,9 @@ function createModel(texturePath, opacity) {
     // new mesh
     mesh = new THREE.Mesh( geometry, material );
     mesh.scale.set( - 1, 1, 1 );
+    if (rotation != null) {
+      mesh.rotation.y = rotation * Math.PI / 180;
+    }
 
     // Lights
     // var light = new THREE.AmbientLight( 0x404040 ); // soft white light
@@ -446,4 +462,9 @@ function changeTextMenu(classToDisplay){
 
   $(".menuContent").animate({opacity:1}, 900);
   $("."+classToDisplay).css({"display" : "block"});
+}
+function displayMenuProject(array){
+    for (var i = 0; i < array.length; i++) {
+      $(".selectionProject").append("<a id="+ i +" onclick=changeProject('change',"+ i + ")> PROJECT NUMBER" + i + "</a>");
+    }
 }
