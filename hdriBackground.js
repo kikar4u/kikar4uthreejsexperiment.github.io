@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/testfelix&paul.jpg", "hdri/quattro_canti_16k.jpg", "img/cityatnight.jpg", "hdri/concorde_optimized.jpg", "img/darkalley.jpg"];
+var textureArray = ["hdri/testfelix&paul.jpg", "img/PHOTO3_31072017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/concorde_optimized.jpg", "img/PHOTO4_31072017.jpg"];
 var imgArray = [];
 var domBig_Container;
 
@@ -53,6 +53,7 @@ function preload(arrayOfImages) {
             window.addEventListener('DOMMouseScroll', onMouseWheel, false);
             window.addEventListener('mousemove', onMouseMove, false);
             window.addEventListener("touchmove", onFingerMove, false);
+            window.addEventListener("mousemove", movingImg, false);
 
           }
 
@@ -269,7 +270,22 @@ function onMouseMove(event){
     // console.log(" rotation x " + target.x + " Rotation y " + target.y);
     //console.log(" rotation x " + mesh.rotation.x + " Rotation y " + mesh.rotation.y + " rotation z " + mesh.rotation.z);
 }
-
+function movingImg(e){
+  var mouseXimg = e.pageX - $('#world').offset().left;
+  var mouseYimg = e.pageY - $('#world').offset().top;
+  var totalX = $('#world').width();
+  var totalY = $('#world').height();
+  var centerX = totalX / 2;
+  var centerY = totalY / 2;
+  var shiftX = centerX - mouseXimg;
+  var shiftY = centerY - mouseYimg;
+  // var startX = ($(document).width() / 2) ;
+  // var startY = ($(document).height() / 2);
+  var startX =-15;
+  var startY =-15;
+  // $('#world').css({"background-position-x": -e.offsetX+"px", "background-position-y" : -e.offsetY + "px"});
+  $('#world').css({ 'background-position-x': startX + (shiftX/55) + 'px', 'background-position-y' : startY + (shiftY/55) + 'px' });
+}
 function createScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color('black');
@@ -424,9 +440,10 @@ function closeNav(){
   document.getElementById('menu').style.width ="0";
 }
 function changeTextMenu(classToDisplay){
-  $(".menuContent").animate({opacity:0}, 900);
   $(".menuContent").css({"display":"none"});
+  $(".menuContent").animate({opacity:0}, 900);
 
-  $("."+classToDisplay).css({"display" : "block"});
+
   $(".menuContent").animate({opacity:1}, 900);
+  $("."+classToDisplay).css({"display" : "block"});
 }

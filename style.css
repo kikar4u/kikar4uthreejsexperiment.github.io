@@ -15,6 +15,19 @@ canvas {
   height: 100vh;
   display: block;
 }
+#world{
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* background-size: cover; */
+  background-origin: padding-box;
+  background-clip: border-box;
+  background-size: 105%;
+  overflow: hidden;
+}
+#world{
+  background-position: center center;
+}
+
 .column{
   /* flex: 25%; */
   max-width: 25%;
@@ -105,7 +118,7 @@ canvas {
 
 .big_container .author
 {
-    font-size: 1rem;
+    font-size: 1.5vh;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -152,4 +165,13 @@ canvas {
     line-height: 20px;
     text-align: justify;
     opacity: 0;
+}
+
+@media screen and (max-width: 992px) {
+  .content_credits, .content_description, .little_container{
+    display:none;
+  }
+  .big_container .title {
+    font-size: 3.5vh;
+  }
 }
