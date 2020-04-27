@@ -5,13 +5,12 @@ var textureArray = ["hdri/concorde_optimized.jpg", "img/ImageHomePageUtrillo.jpg
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var domBig_Container;
-
+let check = false;
 var currentProject = 0;
 var targetProject;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
-
 // var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
 // var PI_2 = Math.PI / 2;
 
@@ -284,7 +283,11 @@ function onMouseMove(event){
     // console.log(" rotation x " + target.x + " Rotation y " + target.y);
     //console.log(" rotation x " + mesh.rotation.x + " Rotation y " + mesh.rotation.y + " rotation z " + mesh.rotation.z);
 }
+
 function movingImg(e){
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+if (!isMobile) {
   var mouseXimg = e.pageX - $('#world').offset().left;
   var mouseYimg = e.pageY - $('#world').offset().top;
   var totalX = $('#world').width();
@@ -299,6 +302,11 @@ function movingImg(e){
   var startY =-15;
   // $('#world').css({"background-position-x": -e.offsetX+"px", "background-position-y" : -e.offsetY + "px"});
   $('#world').css({ 'background-position-x': startX + (shiftX/55) + 'px', 'background-position-y' : startY + (shiftY/55) + 'px' });
+}
+else{
+  console.log("do nothing");
+}
+
 }
 function createScene() {
     scene = new THREE.Scene();
@@ -469,12 +477,21 @@ function displayMenuProject(array){
 
     for (var i = 0; i < array.length; i++) {
       // console.log($('#'+i).load( "projects/project0.html"));
-
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+              $(".mobileSelectorContainer").append("<a onclick=changeProject('change',"+ i + ")><span id=Mobile"+ i +" class='mobileTitleMenu'></span></a>");
+              var toString = "#Mobile" + i;
+              $(toString).load( "projects/project"+i+".html h1", function(){
+                  $(this).find("h1").replaceWith($(this).text());
+              });
+      }
       $(".selectorContainer").append("<a onclick=changeProject('change',"+ i + ")><span id="+ i +" class='titleMenu'></span><span class='dot' onmouseover = 'animationMenu("+ i +", 1)' onmouseout = 'animationMenu("+ i +", 0)'></span></a>");
+
       var toString = "#" + i;
       $(toString).load( "projects/project"+i+".html h1", function(){
           $(this).find("h1").replaceWith($(this).text());
       });
+
     }
 }
 // function addAudio(project){
