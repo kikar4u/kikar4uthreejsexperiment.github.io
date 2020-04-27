@@ -249,7 +249,20 @@ canvas {
   font-size: 6.578947368421052vh;
   margin-left: 50px;
 }
+.mobileSelectionProject{
+  display: none;
+}
 @media screen and (max-width: 992px) {
+  .selectionProject{
+    display: none;
+  }
+  .mobileSelectionProject{
+    display: inline;
+    z-index: 3;
+  }
+  .mobileSelectorContainer a{
+    margin: 5px;
+  }
   .content_credits, .content_description, .little_container{
     display:none;
   }
@@ -259,7 +272,9 @@ canvas {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-  }
+.audioPlay{
+  width: 10%;
+}
   .big_container .title {
     font-size: 1.5vh;
   }
@@ -268,7 +283,7 @@ canvas {
         padding: 8px;
   }
   .menu{
-    height:auto;
+    /* height:auto; */
     display: block;
   }
   .menuContent{
@@ -284,9 +299,7 @@ canvas {
     max-width: 100%;
     text-align: center;
   }
-  .audioPlay{
-    width: 10%;
-  }
+
   #world{
     background-position: center center;
 
