@@ -2,8 +2,9 @@
   <source src="audio/audio_concorde.mp3" type="audio/mp3">
   Your browser does not support the audio element.
 </audio>
-<div class="audioPlay">
-  <p onclick="playAudio(0)">PlayAudio</p>
+<div class="audioPlay" onclick="playAudio(0)">
+  <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 480 448.02"><title>mute</title><path d="M352,16.1a16,16,0,0,0-9-14.4,15.68,15.68,0,0,0-17,1.9l-141.8,113L352,284.2Z" transform="translate(-0.01 -0.02)"/><path d="M443.3,420.7,27.3,4.7A16,16,0,0,0,4.7,27.3L105.4,128H96a32.52,32.52,0,0,0-32,32V288a32.09,32.09,0,0,0,32,32h74.2L326,444.5a16.59,16.59,0,0,0,9.9,3.5,17.8,17.8,0,0,0,7-1.6,16.15,16.15,0,0,0,9-14.4V374.6l68.7,68.7a15.93,15.93,0,0,0,22.6,0A15.79,15.79,0,0,0,443.3,420.7Z" transform="translate(-0.01 -0.02)"/></svg>
+  <svg id="Capa_2" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 448.02"><title>volume</title><path d="M278.94,17.58A15.94,15.94,0,0,0,262,19.5L106.37,144H32A32.06,32.06,0,0,0,0,176V304a32,32,0,0,0,32,32h74.37L262,460.52a16,16,0,0,0,17,1.89A16,16,0,0,0,288,448V32A16,16,0,0,0,278.94,17.58Z" transform="translate(0 -15.99)"/><path d="M369,126.86a16,16,0,0,0-22.49,22.78,127.64,127.64,0,0,1,0,180.74A16,16,0,1,0,369,353.1c30.34-29.86,47-70.05,47-113.09S399.33,156.78,369,126.86Z" transform="translate(0 -15.99)"/><path d="M414.14,81.77a16,16,0,1,0-22.56,22.72,190.93,190.93,0,0,1,0,271,16,16,0,0,0,22.56,22.72,223,223,0,0,0,0-316.45Z" transform="translate(0 -15.99)"/></svg>
 </div>
   <div class="author">
       <h3>Art of Corner studios - Frédéric Purgal</h3>
@@ -12,8 +13,8 @@
       <h1>Project3</h1>
   </div>
   <div class="little_container">
-      <h4>description</h4>
-      <h4>credits</h4>
+    <h4 onclick="changeText('content_description')">description</h4>
+    <h4 onclick="changeText('content_credits')">credits</h4>
   </div>
   <div class="content_description">
       <p>

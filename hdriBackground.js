@@ -1,7 +1,7 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO_06112017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg", "img/PHOTO3_31072017.jpg"];
+var textureArray = ["hdri/concorde_optimized.jpg", "img/ImageHomePageUtrillo.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg", "img/PHOTO3_31072017.jpg"];
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var domBig_Container;
@@ -46,6 +46,7 @@ function preload(arrayOfImages) {
             // $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
             $(".content").after().load("projects/project0.html");
 
+
             // launch every step of rendering 3D view
             // create event listener used by 3D application
             // next = document.getElementById("next");
@@ -65,6 +66,7 @@ function preload(arrayOfImages) {
         }
 
     });
+
 
 }
 //
@@ -466,7 +468,13 @@ function changeTextMenu(classToDisplay){
 function displayMenuProject(array){
 
     for (var i = 0; i < array.length; i++) {
-      $(".selectionProject").append("<a id="+ i +" onclick=changeProject('change',"+ i + ")> PROJECT NUMBER" + i + "</a>");
+      // console.log($('#'+i).load( "projects/project0.html"));
+
+      $(".selectorContainer").append("<a onclick=changeProject('change',"+ i + ")><span id="+ i +" class='titleMenu'></span><span class='dot' onmouseover = 'animationMenu("+ i +", 1)' onmouseout = 'animationMenu("+ i +", 0)'></span></a>");
+      var toString = "#" + i;
+      $(toString).load( "projects/project"+i+".html h1", function(){
+          $(this).find("h1").replaceWith($(this).text());
+      });
     }
 }
 // function addAudio(project){
@@ -474,8 +482,46 @@ function displayMenuProject(array){
 //   $(".audioPlay").append("<p onclick=playAudio("+project+")>PlayAudio</p>");
 //   document.getElementsByClassName(".audioPlay").innerHTML = "<p onclick=playAudio("+project+")>PlayAudio</p>";
 // }
+function animationMenu(id, opacityValue){
+  $("#"+id).animate({opacity:opacityValue}, 400);
+}
 function playAudio(project){
   audio = document.getElementById("audio");
-  audio.play();
-  audio.volume = 0.5;
+
+  if (audio.duration > 0 && !audio.paused) {
+    $("#Capa_1").css({"display":"initial" });
+    $("#Capa_2").css({"display":"none"});
+      audio.pause();
+
+  } else {
+    $("#Capa_1").css({"display":"none" });
+    $("#Capa_2").css({"display":"initial"});
+
+    audio.play();
+    audio.volume = 0.5;
+
+  }
+
+}
+function changeText(eventType){
+  if (eventType == "content_credits") {
+    $(".content_description").animate({opacity:0}, 1000, function(){
+
+    });
+          $(".content_description").css({"display": "none"});
+          $(".content_credits").css({"display": "initial"});
+    $(".content_credits").animate({opacity:1}, 1000, function(){
+
+    });
+  }
+  else{
+    $(".content_credits").animate({opacity:0}, 1000, function(){
+
+    });
+          $(".content_credits").css({"display": "none"});
+          $(".content_description").css({"display": "initial"});
+    $(".content_description").animate({opacity:1}, 1000, function(){
+
+    });
+  }
 }

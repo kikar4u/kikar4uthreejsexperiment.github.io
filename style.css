@@ -3,6 +3,10 @@
   font-family: Open Sans Condensed;
   src: url("fonts/OpenSansCondensed-Light.ttf");
 }
+@font-face {
+  font-family: Ruthligos;
+  src:url("fonts/Ruthligos.ttf");
+}
 body
 {
     position: relative;
@@ -15,23 +19,60 @@ canvas {
   height: 100vh;
   display: block;
 }
-
-.selectionProject{
-  color: white;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  right: 1px;
-  align-items: center;
-  justify-content: center;
-  top: 50%;
+#Capa_2{
+  display: none;
 }
-.selectionProject a {
-  display: flex;
-  align-content: flex-end;
-  flex-direction: column;
-  align-items: end;
-  margin-bottom: 25px;
+.selectionProject{
+  position: absolute;
+  top: 0;
+  height: 100%;
+  right:0;
+  color :white;
+  display: table;
+  transition: 0.5s;
+  justify-content: center;
+  z-index: 2;
+
+}
+.selectorContainer{
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+}
+.titleMenu{
+  opacity: 0;
+  transition: all 1;
+}
+.selectorContainer a{
+
+    position: relative;
+    display: block;
+    white-space: nowrap;
+    padding: .2rem 0;
+    text-align: right;
+}
+.dot {
+  position: relative;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  box-shadow: inset 0 0 0 1px #fff;
+  overflow: hidden;
+  vertical-align: middle;
+  z-index: 2;
+  transition: all 1s;
+
+}
+.dot:hover{
+  background-color: white;
+  transition: all 1s;
 }
 #world{
   background-repeat: no-repeat;
@@ -53,6 +94,12 @@ canvas {
   display: flex;
   flex-direction: column;
 }
+.menuIcon{
+  width: 35px;
+  height: 5px;
+  background-color: white;
+  margin: 6px;
+}
 .menu .closebtn{
   position: absolute;
   top: 0;
@@ -67,7 +114,7 @@ canvas {
   flex-wrap: wrap;
   width: 0;
   position: fixed;
-  z-index: 2;
+  z-index: 3;
   top: 0;
   left: 0;
   background-color: rgba(0,0,0);
@@ -95,7 +142,6 @@ canvas {
   transition: 0.3s;
 }
 .bar{
-  display: flex;
   position: fixed;
   color: white;
   background-color: rgba(0,0,0,0.5);
@@ -119,16 +165,17 @@ canvas {
 }
 .big_container
 {
+    overflow: visible;
+    position: absolute;
+    left: 0; right: 0;
+    top: 5vh;
+    width: 100%;
     /* pointer-events: none; */
     opacity:1.0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80%;
+    width:100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: translate(-50%,-50%);
     color: white;
     font-family: 'Open Sans Condensed', sans-serif;
 
@@ -151,7 +198,8 @@ canvas {
 .big_container .title
 {
     text-align: center;
-    font-size: 5vh;
+    font-family: Ruthligos;
+    font-size: 3vh;
     text-transform: uppercase;
     letter-spacing: 20px;
 }
@@ -191,7 +239,16 @@ canvas {
     text-align: justify;
     opacity: 0;
 }
-
+.audioPlay{
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 25px;
+  width: 2%;
+  fill:white;
+  font-size: 6.578947368421052vh;
+  margin-left: 50px;
+}
 @media screen and (max-width: 992px) {
   .content_credits, .content_description, .little_container{
     display:none;
