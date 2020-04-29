@@ -10,13 +10,68 @@
   font-family: Ruthligos;
   src:url("fonts/Ruthligos.ttf");
 }
+a{
+  text-decoration: none;
+}
 body
 {
+
     position: relative;
     margin: 0;
     padding: 0;
     background-color: black;
     font-family: 'Manrope', sans-serif;
+
+}.select {
+
+    position: absolute;
+    display: inline-block;
+    margin:15px;
+    z-index: 3;
+    right: 0px;
+}    .select select {
+        font-family: 'Manrope';
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 3vh;
+        display: inline-block;
+        cursor: pointer;
+        padding: 14px 9px;
+        background: none;
+        border-style: none;
+        color: #ffffff;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+        .select select::-ms-expand {
+            display: none;
+        }
+        .select select:hover,
+        .select select:focus {
+            background: none;
+             outline: none;
+
+        }
+        .select select:disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+.select_arrow {
+    position: absolute;
+    top: 16px;
+    right: 15px;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 8px 5px 0px 5px;
+    border-color: #7b7b7b transparent transparent transparent;
+}
+.select select:hover ~ .select_arrow,
+.select select:focus ~ .select_arrow {
+    border-top-color: #000000;
+}
+.select select:disabled ~ .select_arrow {
+    border-top-color: #cccccc;
 }
 .test{
   position: absolute; /* postulat de départ */
@@ -81,6 +136,7 @@ canvas {
   display: table-cell;
   vertical-align: middle;
   text-align: right;
+
 }
 .titleMenu{
   opacity: 0;
@@ -153,7 +209,7 @@ canvas {
   flex-wrap: wrap;
   width: 0;
   position: fixed;
-  z-index: 3;
+  z-index: 4;
   top: 0;
   left: 0;
   background-color: rgba(0,0,0);
@@ -161,6 +217,10 @@ canvas {
   align-content: center;
   transition: 0.5s;
   justify-content: center;
+}
+.menuLegend{
+  text-align: center;
+  margin: 25px;
 }
 .menuContent{
   /* display: flex;
@@ -198,7 +258,7 @@ canvas {
 }
 .big_container
 {
-
+    text-align: center;
     overflow: visible;
     position: absolute;
     left: 0; right: 0;
@@ -227,6 +287,25 @@ canvas {
 .logo img{
   opacity: 1.0 !important;
   width: 15%;
+}
+.social{
+  position: absolute;
+  /* display: flex;
+  flex-direction: row; */
+  wi
+	position: absolute;
+	z-index: 2;
+	bottom: 2vh;
+  margin: 1vh;
+  text-align: right;
+
+}
+.social a{
+  margin: 10px;
+
+}
+.social svg{
+    width: 2%;
 }
 .big_container .author
 {
@@ -293,6 +372,16 @@ canvas {
   display: none;
 }
 @media screen and (max-width: 992px) {
+  .social{
+    text-align: center;
+
+  }
+  .social svg{
+    width: 10%;
+  }
+  .logo img{
+    width: 70%;
+  }
   .loading {
 	/* position: absolute; */
 	/* top: 50%; */
@@ -327,6 +416,9 @@ canvas {
   }
   .content_credits, .content_description, .little_container{
     display:none;
+  }
+  .author{
+    white-space: nowrap;
   }
   .big_container{
     position: absolute;

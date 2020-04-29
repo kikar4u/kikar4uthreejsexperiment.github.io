@@ -8,6 +8,7 @@ var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.jpg", "h
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var onmenu = false;
+// var composer;
 // var domBig_Container;
 // let check = false;
 var currentProject = 0;
@@ -15,8 +16,8 @@ var targetProject;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
-const divHalfWidth = window.innerWidth / 1.2;
-const divHalfHeight = window.innerHeight / 1.2;
+
+
 
 let WIDTH, HEIGHT;
 // var next;
@@ -36,7 +37,7 @@ function preload(arrayOfImages) {
         currentImg.onload = function(){
           // count nbrs of images loaded
           i++;
-          console.log("img" + i + "finie");
+          // console.log("img" + i + "finie");
 
           if (i == arrayOfImages.length) {
             // if numbers of images correspond to the number of project / images
@@ -44,11 +45,10 @@ function preload(arrayOfImages) {
             $("#world").css({"display" : "block"});
             // remove loading screen
             $(".loading").remove();
-            console.log("everything is done");
+            //console.log("everything is done");
             // add project details
             // $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
             $(".content").after().load("projects/project0.html");
-            $(".test").css({"width" : divHalfWidth, "height" : divHalfHeight});
 
 
             // launch every step of rendering 3D view
@@ -66,6 +66,7 @@ function preload(arrayOfImages) {
             window.addEventListener("touchmove", onFingerMove, false);
             window.addEventListener("mousemove", movingImg, false);
             displayMenuProject(textureArray);
+
             // addAudio(textureArray[0]);
           }
 
@@ -85,17 +86,19 @@ function init() {
     // Create sphere contained textures
     createModel(textureArray[0],1, rotationPerProject[0]);
     render();
+
     // Controls with mouse, no longer useful
     //createOrbit();
     //statsPerf();
     resizeCanvas();
     // Update function
+
     loop();
 
     // get webgl information, only usefull for debug
     var can = document.getElementsByTagName("canvas")[0];
     var gl =    can.getContext('webgl');
-    console.log(gl);
+    // console.log(gl);
 
     gl.getParameter(gl.MAX_TEXTURE_SIZE); // 16 384
 }
@@ -123,9 +126,7 @@ function onMouseWheel(){
     camera.updateProjectionMatrix();
 // scrolling
 // old, may be deleted because no longer usefull
-    if (camera.fov == fovMAX && event.detail >= 3 || event.wheelDeltaY >= 3 ) {
-      console.log("Scrolling : " + event.detail);
-    }
+
 }
 function fadeIn(calc){
 
@@ -175,13 +176,13 @@ function fadeIn(calc){
     // to go back and forth hdris, we use a array, and a counter to check at which projet the user is
     // this prevent out of range when going back and being in the first project at the same time
     if (calc == 1) {
-      console.log("current projet if positif " + currentProject);
+      //console.log("current projet if positif " + currentProject);
       // create object, using next hdris data from array , and rendering it in the scene
       // createModel(texture, startOpacity)
 
       if (patt.test(textureArray[targetProject])) {
 
-        console.log("Okay ! on est dans la regex");
+        //console.log("Okay ! on est dans la regex");
         $("canvas").css({"visibility":"hidden"});
         $("#world").css({"backgroundImage": "url("+textureArray[targetProject]+")"});
 
@@ -190,13 +191,13 @@ function fadeIn(calc){
 
         $("canvas").css({"visibility":"visible"});
         createModel(textureArray[targetProject], 0, rotationPerProject[targetProject]);
-        console.log("tableau :" + textureArray[targetProject]);
+        //console.log("tableau :" + textureArray[targetProject]);
 
       }
 
       // we ++ the counter
       currentProject = targetProject;
-      console.log("current projet if positif " + currentProject);
+      //console.log("current projet if positif " + currentProject);
     }
     // if (calc != 1){
     //
@@ -231,14 +232,14 @@ function fadeIn(calc){
 }
 function changeProject(eventType, id){
   targetProject = parseInt(id);
-  console.log(targetProject);
+  //console.log(targetProject);
   if (eventType == "change") {
     fadeIn(1);
   }
 
   // check which type of event occured, does the user want to go back, or to the next project ?
   if (eventType == "next") {
-    console.log("array length" + textureArray.length);
+    //console.log("array length" + textureArray.length);
     if (currentProject < textureArray.length - 1) {
       // animation transition + createModel
       // fadeIn(calc) calc is an int to know which way need to go in the array, back, or forth
@@ -333,7 +334,7 @@ function movingImg(e){
     $('#world').css({ 'background-position-x': startX + (shiftX/55) + 'px', 'background-position-y' : startY + (shiftY/55) + 'px' });
   }
   else{
-    console.log("do nothing");
+    //console.log("do nothing");
   }
 
 }
@@ -389,7 +390,7 @@ function createModel(texturePath, opacity, rotation) {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
     // create the texture
     let texture = new THREE.TextureLoader().load(texturePath);
-    console.log("texture path: " + texturePath);
+    //console.log("texture path: " + texturePath);
     // stop resize on Chrome
     // BUG: Due to webGL limitations on Firefox, texture is resized
     // NOTE: Work on firefox 76, but framerate is quite low compared to Chrome based browser
@@ -424,7 +425,7 @@ function createModel(texturePath, opacity, rotation) {
     // end Lights
 
     scene.add( mesh );
-    console.log(camera.position);
+    //console.log(camera.position);
 
 }
 // just some stats for optimization
@@ -442,12 +443,28 @@ function render() {
     renderer.setSize(WIDTH, HEIGHT);
     renderer.setClearColor(0x004444);
     renderer.shadowMap.enabled = true;
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
 
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
     renderer.domElement.id = 'canva';
     var canvas =     document.getElementById('canva');
+    // // BUG: post process for bloom, i don't achieve result using it :(
+    // composer = new THREE.EffectComposer(renderer);
+    //
+    // const bloomPass = new THREE.BloomPass(
+    //     25,    // strength
+    //     25,   // kernel size
+    //     4,    // sigma ?
+    //     256,  // blur render target resolution
+    // );
+    //
+    // bloomPass.renderToScreen = true;
+    // composer.addPass(bloomPass);
+    // composer.addPass(new THREE.RenderPass(scene, camera));
+
+
+     // composer.render();
     // window.onclick = function() {
     //   console.log("putain");
     //   canvas.requestPointerLock = canvas.requestPointerLock ||
@@ -477,6 +494,7 @@ function loop() {
     //stats.begin();
     requestAnimationFrame(loop);
     TWEEN.update();
+    // composer.render(scene, camera);
     renderer.render(scene, camera);
     //stats.end();
     //control.update();
@@ -509,6 +527,7 @@ function changeTextMenu(classToDisplay){
 // get every title from the projects html file and then add it to the index menu, making menu dynamic
 function displayMenuProject(array){
 
+    $(".selectorContainer").append("<span class='menuLegend'>Menu</span>");
     for (var i = 0; i < array.length; i++) {
       // console.log($('#'+i).load( "projects/project0.html"));
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
