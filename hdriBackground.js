@@ -1,21 +1,25 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
     renderer, container, control, mesh, stats, geometry;
-var textureArray = ["hdri/concorde_optimized.jpg", "img/ImageHomePageUtrillo.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg", "img/PHOTO3_31072017.jpg"];
+// textureArray is where are stocked HDRI and images for each project.
+// here we supposed we use only 1 img / hdri for each project on the landing page
+// we have X projects so we have X image stocked in here, either hdri or simple image.
+var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg","img/ImageHomePageUtrillo.jpg" ];
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
-var domBig_Container;
-let check = false;
+var onmenu = false;
+// var domBig_Container;
+// let check = false;
 var currentProject = 0;
 var targetProject;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
-// var euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
-// var PI_2 = Math.PI / 2;
+const divHalfWidth = window.innerWidth / 1.2;
+const divHalfHeight = window.innerHeight / 1.2;
 
 let WIDTH, HEIGHT;
-var next;
+// var next;
 
 
 preload(textureArray);
@@ -44,6 +48,7 @@ function preload(arrayOfImages) {
             // add project details
             // $(".big_container").after().prepend("<div id=back><h2>BACK</h2></div><div id=next><h2>NEXT PROJET</h2></div>");
             $(".content").after().load("projects/project0.html");
+            $(".test").css({"width" : divHalfWidth, "height" : divHalfHeight});
 
 
             // launch every step of rendering 3D view
@@ -55,7 +60,9 @@ function preload(arrayOfImages) {
             window.addEventListener('load', init, false);
             window.addEventListener('wheel', onMouseWheel, false);
             window.addEventListener('DOMMouseScroll', onMouseWheel, false);
-            window.addEventListener('mousemove', onMouseMove, false);
+            document.getElementById('world').addEventListener('mousemove', onMouseMove, false);
+
+
             window.addEventListener("touchmove", onFingerMove, false);
             window.addEventListener("mousemove", movingImg, false);
             displayMenuProject(textureArray);
@@ -68,6 +75,8 @@ function preload(arrayOfImages) {
 
 
 }
+
+//div to mouse
 //
 // $("#world").css({"display":"none"});
 function init() {
@@ -134,12 +143,15 @@ function fadeIn(calc){
   }, 2000)
   .start()
   .onStart(function(){
+
     // opacity to 0 to create fade, 2s of duration
     // fade whenever there is no hdri but an image as project cover
     $(".projectImg").animate({opacity:0}, 2000);
     $(".big_container").animate({opacity:0}, 2000, function(){
       // at the end, we change content
           $(".content").after().load("projects/project"+(currentProject)+".html");
+
+
       // and go back to normal opacity
           $(".big_container").animate({opacity:1.0}, 2000);
           // fade img to 1
@@ -263,49 +275,66 @@ function onFingerMove(event){
 
 function onMouseMove(event){
 
-  mouse.x = (event.clientX - windowsHalf.x);
-  mouse.y = (event.clientY - windowsHalf.x);
-    // get mouse position,
+  $("#test").mouseover(function(){
+    onmenu = true;
+  });
+  $("#test").mouseout(function(){
+    onmenu = false;
+  })
+if (!onmenu) {
+  mouse.x = (event.screenX - windowsHalf.x);
+  mouse.y = (event.screenY - windowsHalf.x);
+  // get mouse position,
   target.x = (1-mouse.x) * 0.002; // 0.005 is speed
   target.y = (1-mouse.y) * 0.002;
   mesh.rotation.x -= 0.05 * (target.y + mesh.rotation.x);
   mesh.rotation.y -= 0.05 * (target.x + mesh.rotation.y);
-
-    //Second method using quaternion
-  // var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-  // var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-  // euler.setFromQuaternion(camera.quaternion);
-  // euler.y -= movementX * 0.002;
-  // euler.x -= movementY * 0.002;
-	// euler.x = Math.max( - PI_2, Math.min( PI_2, euler.x ) );
-
-    // console.log("ça fonctionne ? ");
-    // console.log(" rotation x " + target.x + " Rotation y " + target.y);
-    //console.log(" rotation x " + mesh.rotation.x + " Rotation y " + mesh.rotation.y + " rotation z " + mesh.rotation.z);
 }
+// else{
+//   console.log("ah ? !");
+//   backtopos();
+// }
 
+
+
+
+
+}
+function backtopos(){
+  mouse.x = 0;
+  mouse.y = 0;
+  new TWEEN.Tween(mesh.rotation)
+    .to( {
+            x: 0,
+            y: rotationPerProject[currentProject] * Math.PI / 180
+        }, 500 )
+    .start();
+
+
+}
 function movingImg(e){
   var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-if (!isMobile) {
-  var mouseXimg = e.pageX - $('#world').offset().left;
-  var mouseYimg = e.pageY - $('#world').offset().top;
-  var totalX = $('#world').width();
-  var totalY = $('#world').height();
-  var centerX = totalX / 2;
-  var centerY = totalY / 2;
-  var shiftX = centerX - mouseXimg;
-  var shiftY = centerY - mouseYimg;
-  // var startX = ($(document).width() / 2) ;
-  // var startY = ($(document).height() / 2);
-  var startX =-15;
-  var startY =-15;
-  // $('#world').css({"background-position-x": -e.offsetX+"px", "background-position-y" : -e.offsetY + "px"});
-  $('#world').css({ 'background-position-x': startX + (shiftX/55) + 'px', 'background-position-y' : startY + (shiftY/55) + 'px' });
-}
-else{
-  console.log("do nothing");
-}
+// mobile verification, because moving image is based on mouse movement, it is not useful to use on mobile
+// moreover, changing background position cause non-responsive image on mobile
+  if (!isMobile) {
+    var mouseXimg = e.pageX - $('#world').offset().left;
+    var mouseYimg = e.pageY - $('#world').offset().top;
+    var totalX = $('#world').width();
+    var totalY = $('#world').height();
+    var centerX = totalX / 2;
+    var centerY = totalY / 2;
+    var shiftX = centerX - mouseXimg;
+    var shiftY = centerY - mouseYimg;
+    // var startX = ($(document).width() / 2) ;
+    // var startY = ($(document).height() / 2);
+    var startX =-15;
+    var startY =-15;
+    // $('#world').css({"background-position-x": -e.offsetX+"px", "background-position-y" : -e.offsetY + "px"});
+    $('#world').css({ 'background-position-x': startX + (shiftX/55) + 'px', 'background-position-y' : startY + (shiftY/55) + 'px' });
+  }
+  else{
+    console.log("do nothing");
+  }
 
 }
 function createScene() {
@@ -396,6 +425,7 @@ function createModel(texturePath, opacity, rotation) {
 
     scene.add( mesh );
     console.log(camera.position);
+
 }
 // just some stats for optimization
 // showPanel(int) 0:fps 1: latency 2: mb 3+ custom
@@ -413,8 +443,19 @@ function render() {
     renderer.setClearColor(0x004444);
     renderer.shadowMap.enabled = true;
     renderer.render(scene, camera);
+
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
+    renderer.domElement.id = 'canva';
+    var canvas =     document.getElementById('canva');
+    // window.onclick = function() {
+    //   console.log("putain");
+    //   canvas.requestPointerLock = canvas.requestPointerLock ||
+    //                             canvas.mozRequestPointerLock;
+    //
+    //   canvas.requestPointerLock();
+    // }
+
 }
 // old way of moving camera
 function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
@@ -440,21 +481,10 @@ function loop() {
     //stats.end();
     //control.update();
 }
-// add mesh with fbx format
-// var loader = new THREE.FBXLoader();
-// loader.load( 'Models/deserteagleforsubstance.fbx', function ( object ) {
-//   let material = new THREE.MeshBasicMaterial({
-//   });
-//   // changement de scale
-//   object.scale.set(0.1,0.1,0.1);
-//   object.castShadow = true;
-//   object.receiveShadow = false;
-//
-//
-//   scene.add( object );
-//
-// } );
+
+
 function openNav(){
+  // display and animate left menu
   if ($(window).width < 1080) {
     document.getElementById('menu').style.width="100%";
   }
@@ -466,22 +496,29 @@ function closeNav(){
   document.getElementById('menu').style.width ="0";
 }
 function changeTextMenu(classToDisplay){
-  $(".menuContent").css({"display":"none"});
-  $(".menuContent").animate({opacity:0}, 900);
+// used to switch between paragraph in the "about menu" (left menu)
+  $(".menuContent").animate({opacity:0}, 900, function(){
+      $(".menuContent").css({"display":"none"});
+
+      $("."+classToDisplay).css({"display" : "block"});
+  });
+      $(".menuContent").animate({opacity:1}, 900);
 
 
-  $(".menuContent").animate({opacity:1}, 900);
-  $("."+classToDisplay).css({"display" : "block"});
 }
+// get every title from the projects html file and then add it to the index menu, making menu dynamic
 function displayMenuProject(array){
 
     for (var i = 0; i < array.length; i++) {
       // console.log($('#'+i).load( "projects/project0.html"));
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      // mobile version of the menu
       if (isMobile) {
               $(".mobileSelectorContainer").append("<a onclick=changeProject('change',"+ i + ")><span id=Mobile"+ i +" class='mobileTitleMenu'></span></a>");
+              // HACK: somehow, jQuery selector don't work unless i is changed to string using a var instead of doing $("#"+i)
               var toString = "#Mobile" + i;
               $(toString).load( "projects/project"+i+".html h1", function(){
+                // change h1 title (from projectx.html) to simple text.
                   $(this).find("h1").replaceWith($(this).text());
               });
       }
@@ -500,12 +537,14 @@ function displayMenuProject(array){
 //   document.getElementsByClassName(".audioPlay").innerHTML = "<p onclick=playAudio("+project+")>PlayAudio</p>";
 // }
 function animationMenu(id, opacityValue){
+  // animation using to display menu title for each project
   $("#"+id).animate({opacity:opacityValue}, 400);
 }
 function playAudio(project){
   audio = document.getElementById("audio");
-
+ // check if audio is played
   if (audio.duration > 0 && !audio.paused) {
+    // change volume icone depending on audio status
     $("#Capa_1").css({"display":"initial" });
     $("#Capa_2").css({"display":"none"});
       audio.pause();
@@ -521,7 +560,10 @@ function playAudio(project){
 
 }
 function changeText(eventType){
+
+  // animation used to switch between credits and description for project
   if (eventType == "content_credits") {
+    // animate(animated css type, speed, callback function)
     $(".content_description").animate({opacity:0}, 1000, function(){
 
     });

@@ -4,6 +4,9 @@
   src: url("fonts/OpenSansCondensed-Light.ttf");
 }
 @font-face {
+  font-family: 'Manrope', sans-serif;
+}
+@font-face {
   font-family: Ruthligos;
   src:url("fonts/Ruthligos.ttf");
 }
@@ -13,6 +16,42 @@ body
     margin: 0;
     padding: 0;
     background-color: black;
+    font-family: 'Manrope', sans-serif;
+}
+.test{
+  position: absolute; /* postulat de départ */
+  top: 50%; left: 50%; /* à 50%/50% du parent référent */
+  transform: translate(-50%, -50%); /* décalage de 50% de sa propre taille */
+  z-index: 9999;
+}
+.loading{
+
+	/* position: absolute; */
+	top: 50%;
+	/* display: flex; */
+	/* align-content: center; */
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+	position: fixed;
+	right: 50%;
+
+}
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 canvas {
   width: 100vw;
@@ -58,8 +97,8 @@ canvas {
 .dot {
   position: relative;
   display: inline-block;
-  width: 25px;
-  height: 25px;
+  width: 45px;
+  height: 45px;
   border-radius: 2rem;
   margin-left: 1rem;
   margin-right: 1rem;
@@ -147,12 +186,6 @@ canvas {
   background-color: rgba(0,0,0,0.5);
   z-index: 1;
 }
-.loading{
-
-    height: 10em;
-    display: flex;
-    align-items: center;
-    justify-content: center }
 
 .content{
   display: contents;
@@ -165,19 +198,26 @@ canvas {
 }
 .big_container
 {
+
     overflow: visible;
     position: absolute;
     left: 0; right: 0;
-    top: 5vh;
-    width: 100%;
+    top: 50%;
+    /* display: flex; */
+    /* align-content: center; */
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    /* top: 5vh; */
+    /* width: 100%;
+    height:100%; */
     /* pointer-events: none; */
     opacity:1.0;
-    width:100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     color: white;
-    font-family: 'Open Sans Condensed', sans-serif;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 100;
 
 }
 .logo{
@@ -191,7 +231,7 @@ canvas {
 .big_container .author
 {
     font-size: 1.5vh;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     letter-spacing: 2px;
 }
 
@@ -200,7 +240,7 @@ canvas {
     text-align: center;
     font-family: Ruthligos;
     font-size: 3vh;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     letter-spacing: 20px;
 }
 
@@ -242,8 +282,8 @@ canvas {
 .audioPlay{
   position: absolute;
   z-index: 2;
-  top: 0;
-  right: 25px;
+  bottom: 0;
+  left: 25px;
   width: 2%;
   fill:white;
   font-size: 6.578947368421052vh;
@@ -253,12 +293,34 @@ canvas {
   display: none;
 }
 @media screen and (max-width: 992px) {
+  .loading {
+	/* position: absolute; */
+	/* top: 50%; */
+	/* display: flex; */
+	/* align-content: center; */
+	/* -ms-transform: translateY(-50%); */
+	/* transform: translateY(-50%); */
+
+	/* position: absolute; */
+	top: 50%;
+	/* display: flex; */
+	/* align-content: center; */
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+	position: fixed;
+	right: 30%;
+}
   .selectionProject{
     display: none;
+    z-index: 3;
   }
   .mobileSelectionProject{
     display: inline;
     z-index: 3;
+    text-align: center;
+  }
+  .audioPlay{
+    display: none;
   }
   .mobileSelectorContainer a{
     margin: 5px;
