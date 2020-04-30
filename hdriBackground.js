@@ -1,6 +1,6 @@
 
 let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
-    renderer, container, control, mesh, stats, geometry;
+    renderer, container, control, mesh, stats, geometry, composer;
 // textureArray is where are stocked HDRI and images for each project.
 // here we supposed we use only 1 img / hdri for each project on the landing page
 // we have X projects so we have X image stocked in here, either hdri or simple image.
@@ -8,7 +8,6 @@ var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.jpg", "h
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var onmenu = false;
-// var composer;
 // var domBig_Container;
 // let check = false;
 var currentProject = 0;
@@ -86,6 +85,8 @@ function init() {
     // Create sphere contained textures
     createModel(textureArray[0],1, rotationPerProject[0]);
     render();
+    // post_process();
+
 
     // Controls with mouse, no longer useful
     //createOrbit();
@@ -231,6 +232,7 @@ function fadeIn(calc){
   });
 }
 function changeProject(eventType, id){
+  renderer.renderLists.dispose();
   targetProject = parseInt(id);
   //console.log(targetProject);
   if (eventType == "change") {
@@ -350,30 +352,6 @@ function createScene() {
 
 }
 
-// don't work, maybe because it is based on older three js version
-// function onDocumentMouseWheel(event) {
-//   console.log("On entre dans le mousewheel");
-//
-//     // WebKit
-//     if (event.wheelDeltaY) {
-//
-//         fieldOfView -= event.wheelDeltaY * 0.05;
-//         // Opera / Explorer 9
-//     } else if (event.wheelDelta) {
-//         fieldOfView -= event.wheelDelta * 0.05;
-//         // Firefox
-//     } else if (event.detail) {
-//         console.log("wheel delta y " + event.detail);
-//         fieldOfView += event.detail * 1.0;
-//     }
-//     if (fieldOfView < 45 || fieldOfView > 90) {
-//         fieldOfView = (fieldOfView < 45) ? 45 : 90;
-//     }
-//
-//     console.log("field of view : " + fieldOfView);
-//     camera.projectionMatrix = (new THREE.Matrix4()).makePerspective( fieldOfView, aspectRatio, 1, 1100, nearPlane, farPlane );
-//     camera.updateProjectionMatrix();
-// }
 
 function resizeCanvas(){
     window.addEventListener('resize', () =>
@@ -438,6 +416,7 @@ function statsPerf(){
 }
 
 function render() {
+    console.log("je suis ici");
     renderer = new THREE.WebGLRenderer({alpha: true, antialias:true});
     // renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(WIDTH, HEIGHT);
@@ -449,30 +428,20 @@ function render() {
     container.appendChild(renderer.domElement);
     renderer.domElement.id = 'canva';
     var canvas =     document.getElementById('canva');
-    // // BUG: post process for bloom, i don't achieve result using it :(
-    // composer = new THREE.EffectComposer(renderer);
-    //
-    // const bloomPass = new THREE.BloomPass(
-    //     25,    // strength
-    //     25,   // kernel size
-    //     4,    // sigma ?
-    //     256,  // blur render target resolution
-    // );
-    //
-    // bloomPass.renderToScreen = true;
-    // composer.addPass(bloomPass);
-    // composer.addPass(new THREE.RenderPass(scene, camera));
 
-
-     // composer.render();
-    // window.onclick = function() {
-    //   console.log("putain");
-    //   canvas.requestPointerLock = canvas.requestPointerLock ||
-    //                             canvas.mozRequestPointerLock;
-    //
-    //   canvas.requestPointerLock();
-    // }
-
+}
+function post_process(){
+  composer = new THREE.EffectComposer(renderer);
+  console.log("composer : " + composer);
+  composer.addPass(new THREE.RenderPass(scene, camera));
+  const bloomPass = new THREE.BloomPass(
+      150,    // strength
+      25,   // kernel size
+      50,    // sigma ?
+      256,  // blur render target resolution
+  );
+  composer.addPass(bloomPass);
+  bloomPass.renderToScreen = true;
 }
 // old way of moving camera
 function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
@@ -492,10 +461,13 @@ function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
 
 function loop() {
     //stats.begin();
+
     requestAnimationFrame(loop);
+
     TWEEN.update();
-    // composer.render(scene, camera);
+
     renderer.render(scene, camera);
+    // composer.render(scene, camera);
     //stats.end();
     //control.update();
 }
@@ -527,7 +499,7 @@ function changeTextMenu(classToDisplay){
 // get every title from the projects html file and then add it to the index menu, making menu dynamic
 function displayMenuProject(array){
 
-    $(".selectorContainer").append("<span class='menuLegend'>Menu</span>");
+    $(".selectorContainer").append("<h4 class='menuLegend'>Menu</h4>");
     for (var i = 0; i < array.length; i++) {
       // console.log($('#'+i).load( "projects/project0.html"));
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);

@@ -33,7 +33,7 @@ body
         font-family: 'Manrope';
         text-transform: uppercase;
         font-weight: bold;
-        font-size: 3vh;
+        font-size: 2.5vh;
         display: inline-block;
         cursor: pointer;
         padding: 14px 9px;
@@ -219,8 +219,15 @@ canvas {
   justify-content: center;
 }
 .menuLegend{
-  text-align: center;
+
   margin: 25px;
+  font-size: 2vh;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+
+  pointer-events: none;
+  color: white;
+  font-family: 'Manrope', sans-serif;
 }
 .menuContent{
   /* display: flex;
@@ -359,14 +366,13 @@ canvas {
     opacity: 0;
 }
 .audioPlay{
-  position: absolute;
+
   z-index: 2;
   bottom: 0;
   left: 25px;
-  width: 2%;
+  text-align: left;
   fill:white;
-  font-size: 6.578947368421052vh;
-  margin-left: 50px;
+  position: absolute;
 }
 .mobileSelectionProject{
   display: none;
@@ -432,6 +438,7 @@ canvas {
   .big_container .title {
     font-size: 1.5vh;
   }
+
   .menu a{
         font-size: 2.5vh;
         padding: 8px;
