@@ -416,7 +416,6 @@ function statsPerf(){
 }
 
 function render() {
-    console.log("je suis ici");
     renderer = new THREE.WebGLRenderer({alpha: true, antialias:true});
     // renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(WIDTH, HEIGHT);
@@ -427,21 +426,24 @@ function render() {
     container = document.getElementById('world');
     container.appendChild(renderer.domElement);
     renderer.domElement.id = 'canva';
-    var canvas =     document.getElementById('canva');
+    var canvas = document.getElementById('canva');
 
 }
 function post_process(){
-  composer = new THREE.EffectComposer(renderer);
-  console.log("composer : " + composer);
-  composer.addPass(new THREE.RenderPass(scene, camera));
-  const bloomPass = new THREE.BloomPass(
-      150,    // strength
-      25,   // kernel size
-      50,    // sigma ?
-      256,  // blur render target resolution
-  );
-  composer.addPass(bloomPass);
-  bloomPass.renderToScreen = true;
+  composer = new POSTPROCESSING.EffectComposer(renderer);
+  composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
+  const effectPass = new POSTPROCESSING.EffectPass(
+  camera,
+  new POSTPROCESSING.BlurPass(
+    {
+
+      height:150
+
+    }
+  )
+);
+effectPass.renderToScreen = true;
+composer.addPass(effectPass);
 }
 // old way of moving camera
 function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
@@ -466,7 +468,7 @@ function loop() {
 
     TWEEN.update();
 
-    renderer.render(scene, camera);
+     renderer.render(scene, camera);
     // composer.render(scene, camera);
     //stats.end();
     //control.update();
