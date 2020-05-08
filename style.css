@@ -12,67 +12,94 @@
 }
 a{
   text-decoration: none;
+  color:white;
+  cursor:pointer;
+}
+a:visited{
+  color: white;
+  text-decoration: none;
+}
+
+/* selected link */
+a:active {
+  color: white;
+  text-decoration: none;
 }
 body
 {
-
     position: relative;
     margin: 0;
     padding: 0;
     background-color: black;
     font-family: 'Manrope', sans-serif;
-
-}.select {
+  }
+  /*the container must be positioned relative:*/
+  .custom-select {
 
     position: absolute;
-    display: inline-block;
-    margin:15px;
-    z-index: 3;
-    right: 0px;
-}    .select select {
-        font-family: 'Manrope';
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 2.5vh;
-        display: inline-block;
-        cursor: pointer;
-        padding: 14px 9px;
-        background: none;
-        border-style: none;
-        color: #ffffff;
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-    }
-        .select select::-ms-expand {
-            display: none;
-        }
-        .select select:hover,
-        .select select:focus {
-            background: none;
-             outline: none;
-
-        }
-        .select select:disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-.select_arrow {
-    position: absolute;
-    top: 16px;
     right: 15px;
-    pointer-events: none;
-    border-style: solid;
-    border-width: 8px 5px 0px 5px;
-    border-color: #7b7b7b transparent transparent transparent;
-}
-.select select:hover ~ .select_arrow,
-.select select:focus ~ .select_arrow {
-    border-top-color: #000000;
-}
-.select select:disabled ~ .select_arrow {
-    border-top-color: #cccccc;
-}
+    top:15px;
+    font-family: 'Manrope';
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 2.5vh;
+    z-index: 3;
+  }
+
+  .custom-select select {
+    display: none; /*hide original SELECT element:*/
+  }
+
+  .select-selected {
+    background-color: rgba(0,0,0,0);
+  }
+
+  /*style the arrow inside the select element:*/
+  .select-selected:after {
+    position: absolute;
+    content: "";
+    top: 25px;
+    right: 15px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+  }
+
+  /*point the arrow upwards when the select box is open (active):*/
+  .select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 20px;
+  }
+
+  /*style the items (options), including the selected item:*/
+  .select-items div,.select-selected {
+    color: #ffffff;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /*style items (options):*/
+  .select-items {
+    position: absolute;
+    background-color: rgba(0,0,0,0);
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 3;
+  }
+
+  /*hide the items when the select box is closed:*/
+  .select-hide {
+    display: none;
+  }
+
+  .select-items div:hover, .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 .test{
   position: absolute; /* postulat de départ */
   top: 50%; left: 50%; /* à 50%/50% du parent référent */
@@ -149,6 +176,8 @@ canvas {
     white-space: nowrap;
     padding: .2rem 0;
     text-align: right;
+    right: 2vh;
+
 }
 .dot {
   position: relative;
@@ -202,6 +231,26 @@ canvas {
   font-size: 6.578947368421052vh;
   margin-left: 50px;
 }
+
+.quote {
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: 20px 0;
+  grid-gap: 20px;
+}
+.quote:after{
+  content: " \" ";
+  font-size: 5vh;
+  display: block;
+  margin: 20px;
+}
+.quote:before {
+  content: " \" ";
+  font-size: 5vh;
+  display: block;
+  margin: -20px;
+}
 .menu{
   margin: 0 auto;
   height: 100%;
@@ -212,19 +261,24 @@ canvas {
   z-index: 4;
   top: 0;
   left: 0;
-  background-color: rgba(0,0,0);
+  background-color: rgba(0,0,0,0.5);
   overflow-x: hidden;
   align-content: center;
   transition: 0.5s;
   justify-content: center;
 }
+
+.menu a:hover{
+  color:white;
+}
+
 .menuLegend{
 
   margin: 25px;
   font-size: 2vh;
   text-transform: uppercase;
   letter-spacing: 2px;
-
+  text-decoration: none;
   pointer-events: none;
   color: white;
   font-family: 'Manrope', sans-serif;
@@ -250,8 +304,10 @@ canvas {
 .bar{
   position: fixed;
   color: white;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0);
   z-index: 1;
+  left: 2vh;
+  top: 2vh;
 }
 
 .content{
@@ -272,8 +328,8 @@ canvas {
     top: 50%;
     /* display: flex; */
     /* align-content: center; */
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
+    -ms-transform: translateY(-60%);
+    transform: translateY(-60%);
     /* top: 5vh; */
     /* width: 100%;
     height:100%; */
@@ -299,8 +355,6 @@ canvas {
   position: absolute;
   /* display: flex;
   flex-direction: row; */
-  wi
-	position: absolute;
 	z-index: 2;
 	bottom: 2vh;
   margin: 1vh;
@@ -309,10 +363,14 @@ canvas {
 }
 .social a{
   margin: 10px;
-
+  z-index: 3;
+  position: relative;
 }
 .social svg{
-    width: 2%;
+  width: 2%;
+}
+.social .audioPlay svg{
+  width:5%;
 }
 .big_container .author
 {
@@ -327,7 +385,7 @@ canvas {
     font-family: Ruthligos;
     font-size: 3vh;
     /* text-transform: uppercase; */
-    letter-spacing: 20px;
+    /* letter-spacing: 20px; */
 }
 
 .little_container
@@ -348,6 +406,8 @@ canvas {
 
 .big_container .content_description
 {
+  position: absolute;
+  top: 55vh;
     font-size: 2vh;
     width: 40%;
     letter-spacing: 2px;
@@ -357,7 +417,8 @@ canvas {
 }
 
 .big_container .content_credits
-{
+{  position: absolute;
+  top: 55vh;
     font-size: 2vh;
     width: 40%;
     letter-spacing: 2px;
@@ -374,10 +435,19 @@ canvas {
   fill:white;
   position: absolute;
 }
+.audioPlay:hover{
+  cursor: pointer;
+}
 .mobileSelectionProject{
   display: none;
 }
 @media screen and (max-width: 992px) {
+  .quote{
+    display: initial;
+  }
+  .quote:after,.quote:before {
+    display: none;
+}
   .social{
     text-align: center;
 

@@ -1,22 +1,23 @@
 
-let scene, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
-    renderer, container, control, mesh, stats, geometry, composer;
+let scene, scene2, camera, fieldOfView = 70, aspectRatio, nearPlane, farPlane,
+    renderer, container, control, mesh, stats, geometry;
+var blurredHDRI = ["hdri/blurred/blurred_concorde.jpg", "hdri/blurred/blurred_photo3.jpg", "hdri/blurred/blurred_utrillo.jpg", "hdri/blurred/blurred_felix.jpg", "hdri/blurred/blurred_quattro.jpg"];
 // textureArray is where are stocked HDRI and images for each project.
 // here we supposed we use only 1 img / hdri for each project on the landing page
 // we have X projects so we have X image stocked in here, either hdri or simple image.
-var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.jpg", "hdri/quattro_canti_16k.jpg", "hdri/testfelix&paul.jpg","img/ImageHomePageUtrillo.jpg" ];
+var textureArray = ["hdri/concorde_optimized.jpg", "img/PHOTO3_31072017.JPG", "img/ImageHomePageUtrillo.jpg", "hdri/testfelix&paul.jpg","hdri/quattro_canti_16k.jpg" ];
 var rotationPerProject = [-90, 0, 0, 0, 0];
 var imgArray = [];
 var onmenu = false;
+var imgProject = false;
+var isMobile;
 // var domBig_Container;
 // let check = false;
-var currentProject = 0;
-var targetProject;
+let currentProject;
+let targetProject;
 const mouse = new THREE.Vector2();
 const target = new THREE.Vector2();
 const windowsHalf = new THREE.Vector2( window.innerWidth / 2, window.innerHeight / 2);
-
-
 
 let WIDTH, HEIGHT;
 // var next;
@@ -60,8 +61,10 @@ function preload(arrayOfImages) {
             window.addEventListener('wheel', onMouseWheel, false);
             window.addEventListener('DOMMouseScroll', onMouseWheel, false);
             document.getElementById('world').addEventListener('mousemove', onMouseMove, false);
-
-
+            document.getElementById('menu').addEventListener('mousemove', onMouseMove, false);
+            /*if the user clicks anywhere outside the select box,
+            then close all select boxes:*/
+            document.addEventListener("click", closeAllSelect);
             window.addEventListener("touchmove", onFingerMove, false);
             window.addEventListener("mousemove", movingImg, false);
             displayMenuProject(textureArray);
@@ -76,16 +79,15 @@ function preload(arrayOfImages) {
 
 }
 
-//div to mouse
-//
-// $("#world").css({"display":"none"});
 function init() {
   // Create scene
+    currentProject = 0;
+    targetProject = 0;
     createScene();
     // Create sphere contained textures
     createModel(textureArray[0],1, rotationPerProject[0]);
-    render();
-    // post_process();
+    scene.add( mesh );
+    render(document.getElementById('world'), 'canva');
 
 
     // Controls with mouse, no longer useful
@@ -93,7 +95,7 @@ function init() {
     //statsPerf();
     resizeCanvas();
     // Update function
-
+    console.log(currentProject);
     loop();
 
     // get webgl information, only usefull for debug
@@ -126,10 +128,12 @@ function onMouseWheel(){
     camera.projectionMatrix =    (new THREE.Matrix4()).makePerspective( camera.fov, window.innerWidth / window.innerHeight, 1, 1100, camera.near, camera.far );
     camera.updateProjectionMatrix();
 // scrolling
-// old, may be deleted because no longer usefull
 
 }
-function fadeIn(calc){
+// fadeIn()
+// calc = bool used before using non linear switch between projects
+// e string used to create blur with menu
+function fadeIn(calc, e){
 
   // document.getElementsByTagName("canvas")[0].style.animationName = "fadeToBlack";
   // use tween to fade between materials using material opacity
@@ -145,21 +149,19 @@ function fadeIn(calc){
   }, 2000)
   .start()
   .onStart(function(){
+      // opacity to 0 to create fade, 2s of duration
+      // fade whenever there is no hdri but an image as project cover
+      $(".projectImg").animate({opacity:0}, 2000);
+      $(".big_container").animate({opacity:0}, 2000, function(){
+        // at the end, we change content
+            $(".content").after().load("projects/project"+(currentProject)+".html");
+            // we load specific content using external html page, depending on which project is needed
 
-    // opacity to 0 to create fade, 2s of duration
-    // fade whenever there is no hdri but an image as project cover
-    $(".projectImg").animate({opacity:0}, 2000);
-    $(".big_container").animate({opacity:0}, 2000, function(){
-      // at the end, we change content
-          $(".content").after().load("projects/project"+(currentProject)+".html");
-
-
-      // and go back to normal opacity
-          $(".big_container").animate({opacity:1.0}, 2000);
-          // fade img to 1
-          $(".projectImg").animate({opacity:1}, 2000);
-    });
-
+            // and go back to normal opacity
+            $(".big_container").animate({opacity:1}, 2000);
+            // fade img to 1
+            $(".projectImg").animate({opacity:1}, 2000);
+      });
 
   });
   // at end of animation, we change the material
@@ -184,42 +186,31 @@ function fadeIn(calc){
       if (patt.test(textureArray[targetProject])) {
 
         //console.log("Okay ! on est dans la regex");
-        $("canvas").css({"visibility":"hidden"});
+        $("#canva").css({"visibility":"hidden"});
+        // console.log("on arrive au hidden ici");
         $("#world").css({"backgroundImage": "url("+textureArray[targetProject]+")"});
 
       }
       else{
 
         $("canvas").css({"visibility":"visible"});
-        createModel(textureArray[targetProject], 0, rotationPerProject[targetProject]);
-        //console.log("tableau :" + textureArray[targetProject]);
-
+        if (e != null && e == "blurMenu") {
+            createModel(blurredHDRI[currentProject], 1, 0);
+            // console.log("YEET" + currentProject);
+        }
+        else{
+          createModel(textureArray[targetProject], 0, rotationPerProject[targetProject]);
+          //console.log("tableau :" + textureArray[targetProject]);
+        }
+          scene.add( mesh );
       }
+
 
       // we ++ the counter
       currentProject = targetProject;
-      //console.log("current projet if positif " + currentProject);
+
+      // console.log("current projet if positif " + currentProject);
     }
-    // if (calc != 1){
-    //
-    //   if (patt.test(textureArray[targetProject])) {
-    //
-    //     $("canvas").css({"visibility":"hidden"});
-    //     $("#world").css({"backgroundImage": "url("+textureArray[targetProject]+")"});
-    //
-    //   }
-    //   else{
-    //
-    //     console.log("current projet " + currentProject);
-    //     $("canvas").css({"visibility":"visible"});
-    //     // same thing, but for going back in the array
-    //     createModel(textureArray[targetProject], 0);
-    //
-    //   }
-    //
-    //   currentProject--;
-    //   console.log("current projet " + currentProject);
-    // }
 
 
     // fadeIn from 0 opacity to 1 for material (hdri)
@@ -230,34 +221,81 @@ function fadeIn(calc){
     }, 2000)
     .start();
   });
+
+}
+// fadeIn variation used for menu
+// main difference is animation time and control of hdri
+function blurHdri(calc, e){
+  var tweenon = new TWEEN.Tween(mesh.material).to({
+    opacity:0,
+    // 2000 is time of animation, in ms
+  }, 2000)
+  .start()
+  .onStart(function(){
+    $(".projectImg").animate({opacity:0}, 500);
+    $(".big_container").animate({opacity:0}, 500, function(){
+      // at the end, we change content
+          // $(".content").after().load("projects/project"+(currentProject)+".html");
+
+
+      // and go back to normal opacity
+          $(".big_container").animate({opacity:1}, 500);
+          // fade img to 1
+          $(".projectImg").animate({opacity:1}, 500);
+    });
+    // console.log("tween truc : " + tweenon);
+    // console.log("on est dans le trucla");
+    // delete old mesh
+    mesh.geometry.dispose();
+    // delete old material
+    mesh.material.dispose();
+    // remove mesh from scene
+    scene.remove(mesh);
+    var patt = /img/i;
+    // regexp used to track if it's an image or and hdri
+    // to go back and forth hdris, we use a array, and a counter to check at which projet the user is
+    // this prevent out of range when going back and being in the first project at the same time
+    if (calc == 1) {
+        if (e != null && e == "blurMenu") {
+
+            createModel(blurredHDRI[currentProject], 1, 0);
+            console.log("YEET" + currentProject);
+            $("#canva").css({"visibility" : "visible"});
+        }
+        else{
+          createModel(textureArray[targetProject], 0, rotationPerProject[targetProject]);
+          //console.log("tableau :" + textureArray[targetProject]);
+        }
+          scene.add( mesh );
+
+
+
+      currentProject = targetProject;
+
+      // console.log("current projet if positif " + currentProject);
+    }
+
+
+    // fadeIn from 0 opacity to 1 for material (hdri)
+    tweenon = new TWEEN.Tween(mesh.material).to({
+
+      opacity:1,
+
+    }, 1)
+    .start();
+  });
 }
 function changeProject(eventType, id){
   renderer.renderLists.dispose();
-  targetProject = parseInt(id);
-  //console.log(targetProject);
+
+  targetProject = Number(id);
+  // id is changed to int
   if (eventType == "change") {
     fadeIn(1);
   }
-
-  // check which type of event occured, does the user want to go back, or to the next project ?
-  if (eventType == "next") {
-    //console.log("array length" + textureArray.length);
-    if (currentProject < textureArray.length - 1) {
-      // animation transition + createModel
-      // fadeIn(calc) calc is an int to know which way need to go in the array, back, or forth
-      fadeIn(1);
-    }
-  }
-  else if (eventType == "back") {
-    if (currentProject > 0) {
-      fadeIn(0);
-      // console.log("on est dans le trucla");
-      // mesh.geometry.dispose();
-      // mesh.material.dispose();
-      // scene.remove(mesh);
-      // createModel(textureArray[currentProject-1]);
-      // currentProject--;
-    }
+  else if(eventType == "menu"){
+    console.log(eventType + "blurhdri");
+    blurHdri(1, "blurMenu");
   }
 
 }
@@ -364,7 +402,7 @@ function resizeCanvas(){
     })
 }
 
-function createModel(texturePath, opacity, rotation) {
+function createModel(texturePath, opacity, rotation ) {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
     // create the texture
     let texture = new THREE.TextureLoader().load(texturePath);
@@ -402,7 +440,7 @@ function createModel(texturePath, opacity, rotation) {
     // scene.add( spotLight );
     // end Lights
 
-    scene.add( mesh );
+
     //console.log(camera.position);
 
 }
@@ -415,35 +453,17 @@ function statsPerf(){
   document.body.appendChild( stats.dom );
 }
 
-function render() {
+function render(container, id) {
     renderer = new THREE.WebGLRenderer({alpha: true, antialias:true});
     // renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(WIDTH, HEIGHT);
     renderer.setClearColor(0x004444);
     renderer.shadowMap.enabled = true;
     // renderer.render(scene, camera);
-
-    container = document.getElementById('world');
     container.appendChild(renderer.domElement);
-    renderer.domElement.id = 'canva';
-    var canvas = document.getElementById('canva');
+    renderer.domElement.id = id;
+    var canvas = document.getElementById(id);
 
-}
-function post_process(){
-  composer = new POSTPROCESSING.EffectComposer(renderer);
-  composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
-  const effectPass = new POSTPROCESSING.EffectPass(
-  camera,
-  new POSTPROCESSING.BlurPass(
-    {
-
-      height:150
-
-    }
-  )
-);
-effectPass.renderToScreen = true;
-composer.addPass(effectPass);
 }
 // old way of moving camera
 function createOrbit(minDistance, maxDistance, enableZoom, autoRotate, speed) {
@@ -467,16 +487,41 @@ function loop() {
     requestAnimationFrame(loop);
 
     TWEEN.update();
-
-     renderer.render(scene, camera);
+    // composer.render(scene, camera);
+    renderer.render(scene, camera);
     // composer.render(scene, camera);
     //stats.end();
     //control.update();
 }
+function hideAllProjectsElements(type){
+  if (type == "show") {
+    $("#world").children().show();
+    $(".custom-select").show();
+    $(".bar").show();
+    if(isMobile){
+          $("#test").hide();
+    }
 
+  }
+  else{
+    $("#world").children().hide();
 
+    $(".custom-select").hide();
+
+    $(".bar").hide();
+
+    $("#canva").show();
+  }
+
+}
 function openNav(){
+
   // display and animate left menu
+  hideAllProjectsElements();
+  changeProject("menu", currentProject);
+
+  // in Fadein change To fade to blurred hdris
+
   if ($(window).width < 1080) {
     document.getElementById('menu').style.width="100%";
   }
@@ -485,7 +530,13 @@ function openNav(){
   }
 }
 function closeNav(){
-  document.getElementById('menu').style.width ="0";
+    console.log("target : " + targetProject);
+    hideAllProjectsElements("show");
+
+    changeProject("change", currentProject);
+    console.log(currentProject);
+
+    document.getElementById('menu').style.width ="0";
 }
 function changeTextMenu(classToDisplay){
 // used to switch between paragraph in the "about menu" (left menu)
@@ -504,7 +555,7 @@ function displayMenuProject(array){
     $(".selectorContainer").append("<h4 class='menuLegend'>Menu</h4>");
     for (var i = 0; i < array.length; i++) {
       // console.log($('#'+i).load( "projects/project0.html"));
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       // mobile version of the menu
       if (isMobile) {
               $(".mobileSelectorContainer").append("<a onclick=changeProject('change',"+ i + ")><span id=Mobile"+ i +" class='mobileTitleMenu'></span></a>");
@@ -514,21 +565,20 @@ function displayMenuProject(array){
                 // change h1 title (from projectx.html) to simple text.
                   $(this).find("h1").replaceWith($(this).text());
               });
+
       }
       $(".selectorContainer").append("<a onclick=changeProject('change',"+ i + ")><span id="+ i +" class='titleMenu'></span><span class='dot' onmouseover = 'animationMenu("+ i +", 1)' onmouseout = 'animationMenu("+ i +", 0)'></span></a>");
-
       var toString = "#" + i;
       $(toString).load( "projects/project"+i+".html h1", function(){
           $(this).find("h1").replaceWith($(this).text());
       });
 
     }
+      $(".selectorContainer").append("<a href='http://www.artofcorner.fr/portfolio/'><span id=portfolio class='titleMenu'>portfolio</span><span class='dot' onmouseover=animationMenu('portfolio',1) onmouseout=animationMenu('portfolio',0)></span></a>");
+      if (isMobile) {
+        $(".mobileSelectorContainer").append("<a href='http://www.artofcorner.fr/portfolio/'><span id=MobilePortfolio class='mobileTitleMenu'>Portfolio</span></a>");
+      }
 }
-// function addAudio(project){
-//   console.log("dans le addaudio");
-//   $(".audioPlay").append("<p onclick=playAudio("+project+")>PlayAudio</p>");
-//   document.getElementsByClassName(".audioPlay").innerHTML = "<p onclick=playAudio("+project+")>PlayAudio</p>";
-// }
 function animationMenu(id, opacityValue){
   // animation using to display menu title for each project
   $("#"+id).animate({opacity:opacityValue}, 400);
@@ -562,18 +612,88 @@ function changeText(eventType){
     });
           $(".content_description").css({"display": "none"});
           $(".content_credits").css({"display": "initial"});
-    $(".content_credits").animate({opacity:1}, 1000, function(){
+          $(".content_credits").animate({opacity:1}, 1000, function(){
 
     });
   }
   else{
-    $(".content_credits").animate({opacity:0}, 1000, function(){
+          $(".content_credits").animate({opacity:0}, 1000, function(){
 
     });
           $(".content_credits").css({"display": "none"});
           $(".content_description").css({"display": "initial"});
-    $(".content_description").animate({opacity:1}, 1000, function(){
+          $(".content_description").animate({opacity:1}, 1000, function(){
 
     });
+  }
+}
+// custom dropdown menu for language
+var x, i, j, selElmnt, a, b, c;
+/*look for any elements with the class "custom-select":*/
+x = document.getElementsByClassName("custom-select");
+for (i = 0; i < x.length; i++) {
+  selElmnt = x[i].getElementsByTagName("select")[0];
+  /*for each element, create a new DIV that will act as the selected item:*/
+  a = document.createElement("DIV");
+  a.setAttribute("class", "select-selected");
+  a.innerHTML = "FR";
+  x[i].appendChild(a);
+  /*for each element, create a new DIV that will contain the option list:*/
+  b = document.createElement("DIV");
+  b.setAttribute("class", "select-items select-hide");
+  for (j = 1; j < selElmnt.length; j++) {
+    /*for each option in the original select element,
+    create a new DIV that will act as an option item:*/
+    c = document.createElement("DIV");
+    c.innerHTML = selElmnt.options[j].innerHTML;
+    c.addEventListener("click", function(e) {
+        /*when an item is clicked, update the original select box,
+        and the selected item:*/
+        var y, i, k, s, h;
+        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+        h = this.parentNode.previousSibling;
+        for (i = 0; i < s.length; i++) {
+          if (s.options[i].innerHTML == this.innerHTML) {
+            s.selectedIndex = i;
+            h.innerHTML = this.innerHTML;
+            y = this.parentNode.getElementsByClassName("same-as-selected");
+            for (k = 0; k < y.length; k++) {
+              y[k].removeAttribute("class");
+            }
+            this.setAttribute("class", "same-as-selected");
+            break;
+          }
+        }
+        h.click();
+    });
+    b.appendChild(c);
+  }
+  x[i].appendChild(b);
+  a.addEventListener("click", function(e) {
+      /*when the select box is clicked, close any other select boxes,
+      and open/close the current select box:*/
+      e.stopPropagation();
+      closeAllSelect(this);
+      this.nextSibling.classList.toggle("select-hide");
+      this.classList.toggle("select-arrow-active");
+    });
+}
+function closeAllSelect(elmnt) {
+  /*a function that will close all select boxes in the document,
+  except the current select box:*/
+  var x, y, i, arrNo = [];
+  x = document.getElementsByClassName("select-items");
+  y = document.getElementsByClassName("select-selected");
+  for (i = 0; i < y.length; i++) {
+    if (elmnt == y[i]) {
+      arrNo.push(i)
+    } else {
+      y[i].classList.remove("select-arrow-active");
+    }
+  }
+  for (i = 0; i < x.length; i++) {
+    if (arrNo.indexOf(i)) {
+      x[i].classList.add("select-hide");
+    }
   }
 }
